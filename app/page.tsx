@@ -29,6 +29,13 @@ export default function Home() {
             {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
             <Link href="/admin" className="admin-link">Admin</Link>
           </nav>
+          <details className="mobile-nav">
+            <summary aria-label="បើកម៉ឺនុយ">☰</summary>
+            <nav className="mobile-menu" aria-label="Mobile navigation">
+              {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+              <Link href="/admin" className="admin-link">Admin</Link>
+            </nav>
+          </details>
         </div>
       </header>
 
@@ -103,7 +110,7 @@ export default function Home() {
             <VideoCard title="កំណែវិញ្ញាសារត្រៀមប្របាក់ឌុបឆ្នាំ ២០២២ សម្រាប់ប្អូនៗរៀនត្រៀមបាក់ឌុប | អ្នកគ្រូ ជា សុខនា" youtubeId="WPR8TYzxzsM" />
             <VideoCard title="ថ្នាក់ទី១២ គីមីវិទ្យា ការសំយោគអេស្ទែ | អ្នកគ្រូ យឹម សុឃន់" youtubeId="Ft6KTOuS69U" />
             <VideoCard title="ថ្នាក់ទី១២ គណិតវិទ្យា គណនាអាំងតេក្រាល | អ្នកគ្រូ កាក់ តី" youtubeId="ES21NEdiDuQ" />
-            
+
           </div>
         </div>
       </section>
