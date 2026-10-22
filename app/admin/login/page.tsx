@@ -1,0 +1,4 @@
+import { createClient } from "../../../lib/supabase/server";
+import { redirect } from "next/navigation";
+
+export default function Login(){ async function login(formData:FormData){ "use server"; const supabase=await createClient(); const email=String(formData.get("email")); const password=String(formData.get("password")); const {error}=await supabase.auth.signInWithPassword({email,password}); if(!error) redirect("/admin"); redirect("/admin/login?error=1"); } return <main className="adminpage"><div className="panel login"><img src="/logo.png" alt="Our Teacher School"/><h1>Admin Login</h1><form action={login}><input name="email" type="email" placeholder="Email" required/><input name="password" type="password" placeholder="Password" required/><button className="btn btn-gold" type="submit">Login</button></form><a href="/">← Back to Website</a></div></main>}
