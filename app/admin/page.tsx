@@ -21,6 +21,8 @@ const statusText: Record<string, string> = {
   saved: "បានរក្សាទុកមាតិកា។",
   deleted: "បានលុបមាតិកា។",
   "missing-required": "សូមបំពេញវាលដែលចាំបាច់។",
+  "invalid-image": "សូមជ្រើសរូបភាពដែលមានទំហំមិនលើស 5MB។",
+  "upload-error": "Upload រូបភាពមិនបានទេ។ សូមអនុវត្ត Storage setup ក្នុង supabase-schema.sql។",
   "save-error": "រក្សាទុកមិនបានទេ។ សូមពិនិត្យ schema និង RLS policy ក្នុង Supabase។",
   "delete-error": "លុបមិនបានទេ។ សូមពិនិត្យ RLS policy ក្នុង Supabase។",
   "load-error": "មិនអាចអានទិន្នន័យបានទេ។ សូមអនុវត្ត admin policies ក្នុង supabase-schema.sql។",
@@ -143,6 +145,13 @@ function TextArea({ label, name, value }: { label: string; name: string; value?:
   return <label className="admin-field admin-field-wide">{label}<textarea name={name} rows={3} defaultValue={value ?? ""} /></label>;
 }
 
+function ImageFields({ label, name, value }: { label: string; name: string; value?: string | null }) {
+  return <>
+    <Field label={`${label} URL (ជម្រើស)`} name={name} value={value} type="url" />
+    <label className="admin-field">Upload រូបភាពពីកុំព្យូទ័រ<input name="image_file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" /></label>
+  </>;
+}
+
 function Published({ checked }: { checked: boolean }) {
   return <label className="admin-check"><input name="published" type="checkbox" defaultChecked={checked} /> បង្ហាញលើ Website</label>;
 }
@@ -155,11 +164,11 @@ function FormButtons({ editing, deleteAction, id }: { editing: boolean; deleteAc
 }
 
 function NewsForm({ item }: { item?: NewsRow }) {
-  return <form action={saveNews} className={`content-form ${item ? "record-form" : "new-form"}`}>
+  return <form action={saveNews} encType="multipart/form-data" className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
     <Field label="ចំណងជើង (ខ្មែរ)" name="title_km" value={item?.title_km} required />
     <Field label="ចំណងជើង (English)" name="title_en" value={item?.title_en} />
-    <Field label="Cover image URL" name="cover_url" value={item?.cover_url} type="url" />
+    <ImageFields label="Cover image" name="cover_url" value={item?.cover_url} />
     <TextArea label="មាតិកា (ខ្មែរ)" name="content_km" value={item?.content_km} />
     <TextArea label="មាតិកា (English)" name="content_en" value={item?.content_en} />
     <Published checked={item?.published ?? false} />
@@ -168,22 +177,22 @@ function NewsForm({ item }: { item?: NewsRow }) {
 }
 
 function TeacherForm({ item }: { item?: TeacherRow }) {
-  return <form action={saveTeacher} className={`content-form ${item ? "record-form" : "new-form"}`}>
+  return <form action={saveTeacher} encType="multipart/form-data" className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
     <Field label="ឈ្មោះ (ខ្មែរ)" name="name_km" value={item?.name_km} required />
     <Field label="ឈ្មោះ (English)" name="name_en" value={item?.name_en} />
     <Field label="មុខវិជ្ជា (ខ្មែរ)" name="subject_km" value={item?.subject_km} />
     <Field label="មុខវិជ្ជា (English)" name="subject_en" value={item?.subject_en} />
-    <Field label="Photo URL" name="photo_url" value={item?.photo_url} type="url" />
+    <ImageFields label="Photo" name="photo_url" value={item?.photo_url} />
     <TextArea label="ជីវប្រវត្តិ និងប្រវត្តិសិក្សា" name="bio_km" value={item?.bio_km} />
     <FormButtons editing={Boolean(item)} deleteAction={item ? deleteTeacher : undefined} id={item?.id} />
   </form>;
 }
 
 function GalleryForm({ item }: { item?: GalleryRow }) {
-  return <form action={saveGalleryItem} className={`content-form ${item ? "record-form" : "new-form"}`}>
+  return <form action={saveGalleryItem} encType="multipart/form-data" className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
-    <Field label="Image URL" name="image_url" value={item?.image_url} required type="url" />
+    <ImageFields label="រូបភាព" name="image_url" value={item?.image_url} />
     <Field label="ចំណងជើង (ខ្មែរ)" name="title_km" value={item?.title_km} />
     <Field label="ចំណងជើង (English)" name="title_en" value={item?.title_en} />
     <Field label="ប្រភេទ" name="category" value={item?.category} />

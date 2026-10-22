@@ -6,6 +6,7 @@ import { createClient } from "../../lib/supabase/server";
 
 type ContentTable = "news" | "teachers" | "gallery" | "videos";
 type RowValues = Record<string, string | number | boolean | null>;
+const imageBucket = "school-images";
 
 function value(formData: FormData, name: string) {
   const field = formData.get(name);
@@ -44,6 +45,27 @@ async function refreshContent() {
   }
 }
 
+async function imageValue(formData: FormData, urlField: string, folder: string) {
+  const existingUrl = nullableValue(formData, urlField);
+  const file = formData.get("image_file");
+  if (!(file instanceof File) || file.size === 0) return existingUrl;
+
+  if (!file.type.startsWith("image/") || file.size > 5 * 1024 * 1024) {
+    redirect("/admin?status=invalid-image");
+  }
+
+  const extension = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const path = `${folder}/${crypto.randomUUID()}.${extension}`;
+  const supabase = await requireAdmin();
+  const { error } = await supabase.storage.from(imageBucket).upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  });
+  if (error) redirect("/admin?status=upload-error");
+
+  return supabase.storage.from(imageBucket).getPublicUrl(path).data.publicUrl;
+}
+
 async function saveRow(table: ContentTable, id: number | null, values: RowValues) {
   const supabase = await requireAdmin();
   const result = id
@@ -70,13 +92,14 @@ async function deleteRow(table: ContentTable, formData: FormData) {
 export async function saveNews(formData: FormData) {
   const title = value(formData, "title_km");
   if (!title) redirect("/admin?status=missing-required");
+  const coverUrl = await imageValue(formData, "cover_url", "news");
 
   await saveRow("news", rowId(formData), {
     title_km: title,
     title_en: nullableValue(formData, "title_en"),
     content_km: nullableValue(formData, "content_km"),
     content_en: nullableValue(formData, "content_en"),
-    cover_url: nullableValue(formData, "cover_url"),
+    cover_url: coverUrl,
     published: formData.get("published") === "on",
   });
 }
@@ -88,6 +111,7 @@ export async function deleteNews(formData: FormData) {
 export async function saveTeacher(formData: FormData) {
   const name = value(formData, "name_km");
   if (!name) redirect("/admin?status=missing-required");
+  const photoUrl = await imageValue(formData, "photo_url", "teachers");
 
   await saveRow("teachers", rowId(formData), {
     name_km: name,
@@ -95,7 +119,7 @@ export async function saveTeacher(formData: FormData) {
     subject_km: nullableValue(formData, "subject_km"),
     subject_en: nullableValue(formData, "subject_en"),
     bio_km: nullableValue(formData, "bio_km"),
-    photo_url: nullableValue(formData, "photo_url"),
+    photo_url: photoUrl,
   });
 }
 
@@ -104,7 +128,7 @@ export async function deleteTeacher(formData: FormData) {
 }
 
 export async function saveGalleryItem(formData: FormData) {
-  const imageUrl = value(formData, "image_url");
+  const imageUrl = await imageValue(formData, "image_url", "gallery");
   if (!imageUrl) redirect("/admin?status=missing-required");
 
   await saveRow("gallery", rowId(formData), {

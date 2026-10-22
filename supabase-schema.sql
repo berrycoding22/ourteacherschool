@@ -123,6 +123,22 @@ insert into public.admin_users (user_id)
 select id from auth.users
 where email = 'chouberry4@email.com'
 on conflict (user_id) do nothing;
+
+-- Image uploads for the Admin Dashboard.
+-- Run this section in the Supabase SQL Editor before using the Upload button.
+insert into storage.buckets (id, name, public)
+values ('school-images', 'school-images', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "public view school images" on storage.objects;
+create policy "public view school images" on storage.objects
+  for select to public
+  using (bucket_id = 'school-images');
+
+drop policy if exists "admins upload school images" on storage.objects;
+create policy "admins upload school images" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'school-images' and public.is_school_admin());
 -- After creating the administrator in Supabase Auth, authorize that user:
 -- insert into public.admin_users (user_id)
 -- select id from auth.users where email = 'admin@example.com'
