@@ -16,6 +16,8 @@ type NewsRow = { id: number; title_km: string; title_en: string | null; content_
 type TeacherRow = { id: number; name_km: string; name_en: string | null; subject_km: string | null; subject_en: string | null; bio_km: string | null; photo_url: string | null };
 type GalleryRow = { id: number; title_km: string | null; title_en: string | null; image_url: string; category: string | null; published: boolean };
 type VideoRow = { id: number; title_km: string; title_en: string | null; youtube_id: string; description_km: string | null; published: boolean };
+type AdminSection = "overview" | "news" | "teachers" | "gallery" | "videos";
+const adminSections: AdminSection[] = ["overview", "news", "teachers", "gallery", "videos"];
 
 const statusText: Record<string, string> = {
   saved: "បានរក្សាទុកមាតិកា។",
@@ -28,8 +30,9 @@ const statusText: Record<string, string> = {
   "load-error": "មិនអាចអានទិន្នន័យបានទេ។ សូមអនុវត្ត admin policies ក្នុង supabase-schema.sql។",
 };
 
-export default async function AdminPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const [{ status }, supabase] = await Promise.all([searchParams, createClient()]);
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ status?: string; section?: string }> }) {
+  const [{ status, section }, supabase] = await Promise.all([searchParams, createClient()]);
+  const activeSection: AdminSection = adminSections.includes(section as AdminSection) ? section as AdminSection : "overview";
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/admin/login");
 
@@ -61,11 +64,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <Link href="/" className="admin-brand"><img src="/logo.png" alt="Our Teacher School" /><span><b>Our Teacher</b><small>ADMIN CONSOLE</small></span></Link>
           <div className="admin-sidebar-label">CONTENT MANAGEMENT</div>
           <nav className="admin-side-nav" aria-label="Content sections">
-            <a href="#overview"><i>⌘</i> ទិដ្ឋភាពទូទៅ</a>
-            <a href="#news"><i>◼</i> ព័ត៌មាន <span>{news.length}</span></a>
-            <a href="#teachers"><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></a>
-            <a href="#gallery"><i>▧</i> រូបភាព <span>{gallery.length}</span></a>
-            <a href="#videos"><i>▶</i> វីដេអូ <span>{videos.length}</span></a>
+            <Link href="/admin" className={activeSection === "overview" ? "active" : ""}><i>⌘</i> ទិដ្ឋភាពទូទៅ</Link>
+            <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{news.length}</span></Link>
+            <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></Link>
+            <Link href="/admin?section=gallery" className={activeSection === "gallery" ? "active" : ""}><i>▧</i> រូបភាព <span>{gallery.length}</span></Link>
+            <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូ <span>{videos.length}</span></Link>
           </nav>
           <div className="admin-sidebar-footer"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
         </aside>
@@ -76,9 +79,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             <div className="admin-profile"><span>●</span><div><b>Administrator</b><small>Online</small></div></div>
           </header>
 
-          <section className="admin-overview" id="overview">
+          {activeSection === "overview" && <><section className="admin-overview">
             <div><span>WELCOME BACK</span><h2>រៀបចំមាតិកាសាលា<br />បានរហ័ស និងមានរបៀបរៀបរយ</h2></div>
-            <a className="btn btn-gold" href="#news">+ បន្ថែមព័ត៌មាន</a>
+            <Link className="btn btn-gold" href="/admin?section=news">+ បន្ថែមព័ត៌មាន</Link>
           </section>
 
           <div className="dashboard">
@@ -86,7 +89,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             <Stat n={teachers.length} t="គ្រូបង្រៀន" icon="♙" tone="purple" />
             <Stat n={gallery.length} t="រូបភាព" icon="▧" tone="gold" />
             <Stat n={videos.length} t="វីដេអូ" icon="▶" tone="teal" />
-          </div>
+          </div></>}
 
           {(statusText[status ?? ""] || loadError) && (
             <p className={`admin-message ${status === "saved" || status === "deleted" ? "success" : "error"}`} role="status">
@@ -94,31 +97,31 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             </p>
           )}
 
-          <nav className="admin-tabs" aria-label="Content sections"><a href="#news">ព័ត៌មាន</a><a href="#teachers">គ្រូ</a><a href="#gallery">រូបភាព</a><a href="#videos">វីដេអូ</a></nav>
+          <nav className="admin-tabs" aria-label="Content sections"><Link href="/admin?section=news">ព័ត៌មាន</Link><Link href="/admin?section=teachers">គ្រូ</Link><Link href="/admin?section=gallery">រូបភាព</Link><Link href="/admin?section=videos">វីដេអូ</Link></nav>
 
-        <section className="admin-section panel" id="news">
+        {activeSection === "news" && <section className="admin-section panel" id="news">
           <SectionHeading title="ព័ត៌មាន" count={news.length} />
-          <NewsForm />
-          <div className="record-list">{news.map((item) => <NewsForm key={item.id} item={item} />)}</div>
-        </section>
+          <NewsForm section="news" />
+          <div className="record-list">{news.map((item) => <RecordEditor key={item.id} title={item.title_km} meta={item.published ? "Published" : "Draft"}><NewsForm item={item} section="news" /></RecordEditor>)}</div>
+        </section>}
 
-        <section className="admin-section panel" id="teachers">
+        {activeSection === "teachers" && <section className="admin-section panel" id="teachers">
           <SectionHeading title="គ្រូបង្រៀន" count={teachers.length} />
-          <TeacherForm />
-          <div className="record-list">{teachers.map((item) => <TeacherForm key={item.id} item={item} />)}</div>
-        </section>
+          <TeacherForm section="teachers" />
+          <div className="record-list">{teachers.map((item) => <RecordEditor key={item.id} title={item.name_km} meta={item.subject_km || item.name_en || "គ្រូបង្រៀន"}><TeacherForm item={item} section="teachers" /></RecordEditor>)}</div>
+        </section>}
 
-        <section className="admin-section panel" id="gallery">
+        {activeSection === "gallery" && <section className="admin-section panel" id="gallery">
           <SectionHeading title="រូបភាពសកម្មភាព" count={gallery.length} />
-          <GalleryForm />
-          <div className="record-list">{gallery.map((item) => <GalleryForm key={item.id} item={item} />)}</div>
-        </section>
+          <GalleryForm section="gallery" />
+          <div className="record-list">{gallery.map((item) => <RecordEditor key={item.id} title={item.title_km || "រូបភាពសកម្មភាព"} meta={item.category || (item.published ? "Published" : "Draft")}><GalleryForm item={item} section="gallery" /></RecordEditor>)}</div>
+        </section>}
 
-        <section className="admin-section panel" id="videos">
+        {activeSection === "videos" && <section className="admin-section panel" id="videos">
           <SectionHeading title="វីដេអូ" count={videos.length} />
-          <VideoForm />
-          <div className="record-list">{videos.map((item) => <VideoForm key={item.id} item={item} />)}</div>
-        </section>
+          <VideoForm section="videos" />
+          <div className="record-list">{videos.map((item) => <RecordEditor key={item.id} title={item.title_km} meta={item.published ? "Published" : "Draft"}><VideoForm item={item} section="videos" /></RecordEditor>)}</div>
+        </section>}
         </div>
       </div>
     </main>
@@ -155,6 +158,10 @@ function SectionHeading({ title, count }: { title: string; count: number }) {
   return <div className="admin-section-heading"><div><h2>{title}</h2><span>{count} items</span></div></div>;
 }
 
+function RecordEditor({ title, meta, children }: { title: string; meta: string; children: React.ReactNode }) {
+  return <details className="record-editor"><summary><span><b>{title}</b><small>{meta}</small></span><i>⌄</i></summary><div className="record-editor-body">{children}</div></details>;
+}
+
 function Field({ label, name, value, required = false, type = "text" }: { label: string; name: string; value?: string | null; required?: boolean; type?: string }) {
   return <label className="admin-field">{label}<input name={name} type={type} defaultValue={value ?? ""} required={required} /></label>;
 }
@@ -181,9 +188,10 @@ function FormButtons({ editing, deleteAction, id }: { editing: boolean; deleteAc
   </div>;
 }
 
-function NewsForm({ item }: { item?: NewsRow }) {
+function NewsForm({ item, section }: { item?: NewsRow; section: AdminSection }) {
   return <form action={saveNews} encType="multipart/form-data" className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
+    <input type="hidden" name="section" value={section} />
     <Field label="ចំណងជើង (ខ្មែរ)" name="title_km" value={item?.title_km} required />
     <Field label="ចំណងជើង (English)" name="title_en" value={item?.title_en} />
     <ImageFields label="Cover image" name="cover_url" value={item?.cover_url} />
@@ -194,9 +202,10 @@ function NewsForm({ item }: { item?: NewsRow }) {
   </form>;
 }
 
-function TeacherForm({ item }: { item?: TeacherRow }) {
+function TeacherForm({ item, section }: { item?: TeacherRow; section: AdminSection }) {
   return <form action={saveTeacher} encType="multipart/form-data" className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
+    <input type="hidden" name="section" value={section} />
     <Field label="ឈ្មោះ (ខ្មែរ)" name="name_km" value={item?.name_km} required />
     <Field label="ឈ្មោះ (English)" name="name_en" value={item?.name_en} />
     <Field label="មុខវិជ្ជា (ខ្មែរ)" name="subject_km" value={item?.subject_km} />
@@ -207,9 +216,10 @@ function TeacherForm({ item }: { item?: TeacherRow }) {
   </form>;
 }
 
-function GalleryForm({ item }: { item?: GalleryRow }) {
+function GalleryForm({ item, section }: { item?: GalleryRow; section: AdminSection }) {
   return <form action={saveGalleryItem} encType="multipart/form-data" className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
+    <input type="hidden" name="section" value={section} />
     <ImageFields label="រូបភាព" name="image_url" value={item?.image_url} />
     <Field label="ចំណងជើង (ខ្មែរ)" name="title_km" value={item?.title_km} />
     <Field label="ចំណងជើង (English)" name="title_en" value={item?.title_en} />
@@ -219,9 +229,10 @@ function GalleryForm({ item }: { item?: GalleryRow }) {
   </form>;
 }
 
-function VideoForm({ item }: { item?: VideoRow }) {
+function VideoForm({ item, section }: { item?: VideoRow; section: AdminSection }) {
   return <form action={saveVideo} className={`content-form ${item ? "record-form" : "new-form"}`}>
     {item && <input type="hidden" name="id" value={item.id} />}
+    <input type="hidden" name="section" value={section} />
     <Field label="ចំណងជើង (ខ្មែរ)" name="title_km" value={item?.title_km} required />
     <Field label="ចំណងជើង (English)" name="title_en" value={item?.title_en} />
     <Field label="YouTube video ID" name="youtube_id" value={item?.youtube_id} required />

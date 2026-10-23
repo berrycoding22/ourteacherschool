@@ -1360,6 +1360,8 @@ a {
 .admin-side-nav { display: grid; gap: 5px; }
 .admin-side-nav a { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #cbd2f4; font-size: 14px; font-weight: 700; transition: .18s ease; }
 .admin-side-nav a:hover { background: #ffffff14; color: #fff; }
+.admin-side-nav a.active { background: #ffffff18; color: #fff; box-shadow: inset 3px 0 0 #d9bc68; }
+.admin-side-nav a.active i { color: #f0d477; }
 .admin-side-nav i { display: grid; width: 20px; place-items: center; color: #9fb4ff; font-family: Arial, sans-serif; font-size: 14px; font-style: normal; }
 .admin-side-nav span { min-width: 22px; margin-left: auto; padding: 2px 6px; border-radius: 99px; background: #ffffff14; color: #b9c5f9; font-family: Arial, sans-serif; font-size: 11px; text-align: center; }
 .admin-sidebar-footer { display: grid; gap: 8px; margin-top: auto; padding: 20px 9px 0; border-top: 1px solid #ffffff18; }
@@ -1398,8 +1400,18 @@ a {
 .new-form { padding: 22px; border: 1px solid #dbe4f2; border-radius: 14px; background: #f7f9fd; }
 .new-form::before { grid-column: 1 / -1; color: #52617b; font-family: Arial, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; content: "ADD NEW CONTENT"; }
 .record-list { gap: 0; margin-top: 22px; }
-.record-form { padding: 24px 0; }
-.record-form:first-child { border-top: 1px solid #e6eaf1; }
+.record-editor { border-top: 1px solid #e6eaf1; }
+.record-editor:last-child { border-bottom: 1px solid #e6eaf1; }
+.record-editor summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 70px; padding: 12px 4px; cursor: pointer; list-style: none; }
+.record-editor summary::-webkit-details-marker { display: none; }
+.record-editor summary span { min-width: 0; }
+.record-editor summary b, .record-editor summary small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.record-editor summary b { color: #28365f; font-size: 15px; }
+.record-editor summary small { margin-top: 3px; color: #7a879d; font-family: Arial, sans-serif; font-size: 11px; }
+.record-editor summary > i { display: grid; width: 29px; height: 29px; flex: 0 0 29px; place-items: center; border-radius: 50%; background: #eef2fa; color: #526489; font-family: Arial, sans-serif; font-size: 16px; font-style: normal; transition: transform .2s ease; }
+.record-editor[open] summary > i { transform: rotate(180deg); background: #e3eaff; color: #405cc4; }
+.record-editor-body { padding: 2px 0 4px; }
+.record-form { padding: 18px 0 26px; border-top: 1px dashed #dfe6f0; }
 .admin-field { color: #4c5a73; font-size: 12px; }
 .admin-field input, .admin-field textarea { border-color: #dce3ee; border-radius: 9px; background: #fff; }
 .admin-field input { min-height: 46px; }
