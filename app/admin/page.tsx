@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
+import RecordEditor from "./RecordEditor";
 import {
   deleteGalleryItem,
   deleteNews,
@@ -156,10 +157,6 @@ function Stat({ n, t, icon, tone }: { n: number; t: string; icon: string; tone: 
 
 function SectionHeading({ title, count }: { title: string; count: number }) {
   return <div className="admin-section-heading"><div><h2>{title}</h2><span>{count} items</span></div></div>;
-}
-
-function RecordEditor({ title, meta, children }: { title: string; meta: string; children: React.ReactNode }) {
-  return <details className="record-editor"><summary><span><b>{title}</b><small>{meta}</small></span><i>⌄</i></summary><div className="record-editor-body">{children}</div></details>;
 }
 
 function Field({ label, name, value, required = false, type = "text" }: { label: string; name: string; value?: string | null; required?: boolean; type?: string }) {
