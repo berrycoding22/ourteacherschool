@@ -52,7 +52,7 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-card">
-            <img src="/logo.png" alt="Our Teacher School" />
+            <img src="/logo-hero.png" alt="Our Teacher School" />
             <div><span>OUR MISSION</span><strong>Learn · Grow · Succeed</strong></div>
           </div>
         </div>
