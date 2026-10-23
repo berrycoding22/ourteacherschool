@@ -16,6 +16,16 @@
     box-sizing: border-box
 }
 
+img,
+iframe,
+video {
+    max-width: 100%
+}
+
+img {
+    height: auto
+}
+
 html {
     scroll-behavior: smooth
 }
@@ -1112,16 +1122,16 @@ a {
 .teacher-bio > span { display: block; margin-bottom: 7px; color: var(--gold); font-size: 11px; font-weight: 800; letter-spacing: .75px; }
 .teacher-bio p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.85; white-space: pre-line; }
 .teacher-values { position: relative; z-index: 1; margin: 0; color: #6a7891; font-size: 13px; font-weight: 700; letter-spacing: .1px; }
-.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .gallery-grid figure { margin: 0; overflow: hidden; }
-.gallery-grid img { display: block; width: 100%; height: 240px; object-fit: cover; }
+.gallery-grid img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
 .gallery-grid figcaption { padding: 16px; color: var(--ink); font-weight: 700; }
 .content-video-grid { grid-template-columns: repeat(3, 1fr); }
 .content-video-card { padding: 14px; }
 .content-video-card h2, .content-video-card p { margin: 14px 5px 4px; }
 .news-list { display: grid; gap: 20px; }
-.news-item { display: grid; grid-template-columns: 230px 1fr; overflow: hidden; }
-.news-item img { width: 100%; height: 100%; min-height: 200px; object-fit: cover; }
+.news-item { display: grid; grid-template-columns: minmax(200px, 230px) minmax(0, 1fr); overflow: hidden; }
+.news-item img { display: block; width: 100%; height: 100%; min-height: 200px; object-fit: cover; }
 .news-item > div { padding: 24px; }
 .news-item h2 { margin: 9px 0; }
 .content-empty { padding: 44px 24px; border: 1px dashed #aebfdb; border-radius: 18px; color: var(--muted); text-align: center; line-height: 1.8; }
@@ -1195,9 +1205,40 @@ a {
 
     .content-video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
+    .teacher-grid { grid-template-columns: 1fr; gap: 22px; }
+
+    .teacher-card { grid-template-columns: minmax(220px, 38%) minmax(0, 1fr); }
+
+    .teacher-photo-wrap,
+    .teacher-photo-wrap img,
+    .teacher-avatar { min-height: 360px; }
+
     .adminbar .btn {
         min-width: 112px;
     }
+}
+
+@media(max-width:700px) {
+    .wrap { width: min(100% - 32px, 1180px); }
+
+    .content-prose { font-size: 16px; line-height: 1.9; }
+
+    .contact-page-grid { grid-template-columns: 1fr; }
+
+    .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+    .teacher-card { grid-template-columns: 1fr; min-height: 0; }
+
+    .teacher-photo-wrap { min-height: 0; }
+
+    .teacher-photo-wrap img,
+    .teacher-avatar { height: auto; min-height: 0; aspect-ratio: 4 / 3; object-position: center 18%; }
+
+    .teacher-card-body { padding: 28px 24px 32px; }
+
+    .news-item { grid-template-columns: 1fr; }
+
+    .news-item img { height: auto; min-height: 0; aspect-ratio: 16 / 9; }
 }
 
 @media(max-width:520px) {
@@ -1297,8 +1338,8 @@ a {
     .content-hero { padding: 52px 0 36px; }
     .contact-page-grid, .teacher-grid, .gallery-grid, .content-video-grid { grid-template-columns: 1fr; }
     .teacher-card { grid-template-columns: 1fr; min-height: 0; }
-    .teacher-photo-wrap { min-height: 300px; }
-    .teacher-photo-wrap img, .teacher-avatar { min-height: 300px; height: 300px; }
+    .teacher-photo-wrap { min-height: 0; }
+    .teacher-photo-wrap img, .teacher-avatar { min-height: 0; height: auto; aspect-ratio: 4 / 3; }
     .teacher-card-body { padding: 24px 22px 28px; }
     .content-highlights { grid-template-columns: 1fr; }
     .news-item { grid-template-columns: 1fr; }

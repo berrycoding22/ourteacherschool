@@ -69,7 +69,20 @@ export default async function SitePage({ params }: { params: Promise<{ slug: str
     content = <NewsList items={(data ?? []) as News[]} />;
   }
 
-  return <><header className="site-header"><div className="wrap nav-row"><Link href="/" className="brand" aria-label="Our Teacher School home"><img src="/logo.png" alt="Our Teacher School logo" /><span><strong>Our Teacher School</strong><small>BUILD YOUR LIFE</small></span></Link><nav className="desktop-nav" aria-label="Main navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<Link href="/admin" className="admin-link">Admin</Link></nav></div></header><main className="content-page"><header className="content-hero"><div className="wrap"><div className="section-kicker">{eyebrow}</div><h1>{title}</h1><Link href="/" className="text-link">← ទំព័រដើម</Link></div></header><section className="content-body wrap">{content}</section></main><footer className="footer"><div className="wrap copyright">© {new Date().getFullYear()} Our Teacher School. All rights reserved.</div></footer></>;
+  return <>
+    <header className="site-header">
+      <div className="wrap nav-row">
+        <Link href="/" className="brand" aria-label="Our Teacher School home"><img src="/logo.png" alt="Our Teacher School logo" /><span><strong>Our Teacher School</strong><small>BUILD YOUR LIFE</small></span></Link>
+        <nav className="desktop-nav" aria-label="Main navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<Link href="/admin" className="admin-link">Admin</Link></nav>
+        <details className="mobile-nav">
+          <summary aria-label="បើកម៉ឺនុយ">☰</summary>
+          <nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<Link href="/admin" className="admin-link">Admin</Link></nav>
+        </details>
+      </div>
+    </header>
+    <main className="content-page"><header className="content-hero"><div className="wrap"><div className="section-kicker">{eyebrow}</div><h1>{title}</h1><Link href="/" className="text-link">← ទំព័រដើម</Link></div></header><section className="content-body wrap">{content}</section></main>
+    <footer className="footer"><div className="wrap copyright">© {new Date().getFullYear()} Our Teacher School. All rights reserved.</div></footer>
+  </>;
 }
 
 function About() { return <div className="content-prose"><h2>កសាងចំណេះដឹង បង្កើតអនាគត</h2><p>Our Teacher School បង្កើតឡើងក្នុងឆ្នាំ 2002 ដោយមានគោលបំណងផ្តល់ការអប់រំប្រកបដោយគុណភាព និងបរិយាកាសសិក្សាដែលយកចិត្តទុកដាក់ចំពោះសិស្សគ្រប់រូប។</p><div className="content-highlights"><div><b>2002</b><span>ឆ្នាំចាប់ផ្តើម</span></div><div><b>02</b><span>ទីតាំងសាលា</span></div><div><b>100%</b><span>ការយកចិត្តទុកដាក់</span></div></div><p>យើងជួយសិស្សអភិវឌ្ឍចំណេះដឹង ជំនាញ និងទំនុកចិត្ត ដើម្បីត្រៀមខ្លួនសម្រាប់អនាគត។</p></div>; }
