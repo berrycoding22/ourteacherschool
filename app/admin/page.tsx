@@ -56,28 +56,45 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
 
   return (
     <main className="adminpage">
-      <div className="wrap admin-wrap">
-        <div className="adminbar">
-          <div><small>OUR TEACHER SCHOOL</small><h1>Admin Dashboard</h1></div>
-          <form action="/api/logout" method="post"><button className="btn" type="submit">Logout</button></form>
-        </div>
+      <div className="admin-shell">
+        <aside className="admin-sidebar">
+          <Link href="/" className="admin-brand"><img src="/logo.png" alt="Our Teacher School" /><span><b>Our Teacher</b><small>ADMIN CONSOLE</small></span></Link>
+          <div className="admin-sidebar-label">CONTENT MANAGEMENT</div>
+          <nav className="admin-side-nav" aria-label="Content sections">
+            <a href="#overview"><i>⌘</i> ទិដ្ឋភាពទូទៅ</a>
+            <a href="#news"><i>◼</i> ព័ត៌មាន <span>{news.length}</span></a>
+            <a href="#teachers"><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></a>
+            <a href="#gallery"><i>▧</i> រូបភាព <span>{gallery.length}</span></a>
+            <a href="#videos"><i>▶</i> វីដេអូ <span>{videos.length}</span></a>
+          </nav>
+          <div className="admin-sidebar-footer"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
+        </aside>
 
-        <div className="dashboard">
-          <Stat n={news.length} t="ព័ត៌មាន" />
-          <Stat n={teachers.length} t="គ្រូ" />
-          <Stat n={gallery.length} t="រូបភាព" />
-          <Stat n={videos.length} t="វីដេអូ" />
-        </div>
+        <div className="admin-main">
+          <header className="admin-topbar">
+            <div><small>CONTROL CENTER</small><h1>Admin Dashboard</h1><p>គ្រប់គ្រងមាតិកា Our Teacher School នៅកន្លែងតែមួយ។</p></div>
+            <div className="admin-profile"><span>●</span><div><b>Administrator</b><small>Online</small></div></div>
+          </header>
 
-        {(statusText[status ?? ""] || loadError) && (
-          <p className={`admin-message ${status === "saved" || status === "deleted" ? "success" : "error"}`} role="status">
-            {loadError ? statusText["load-error"] : statusText[status ?? ""]}
-          </p>
-        )}
+          <section className="admin-overview" id="overview">
+            <div><span>WELCOME BACK</span><h2>រៀបចំមាតិកាសាលា<br />បានរហ័ស និងមានរបៀបរៀបរយ</h2></div>
+            <a className="btn btn-gold" href="#news">+ បន្ថែមព័ត៌មាន</a>
+          </section>
 
-        <nav className="admin-tabs" aria-label="Content sections">
-          <a href="#news">ព័ត៌មាន</a><a href="#teachers">គ្រូ</a><a href="#gallery">រូបភាព</a><a href="#videos">វីដេអូ</a>
-        </nav>
+          <div className="dashboard">
+            <Stat n={news.length} t="ព័ត៌មាន" icon="◼" tone="blue" />
+            <Stat n={teachers.length} t="គ្រូបង្រៀន" icon="♙" tone="purple" />
+            <Stat n={gallery.length} t="រូបភាព" icon="▧" tone="gold" />
+            <Stat n={videos.length} t="វីដេអូ" icon="▶" tone="teal" />
+          </div>
+
+          {(statusText[status ?? ""] || loadError) && (
+            <p className={`admin-message ${status === "saved" || status === "deleted" ? "success" : "error"}`} role="status">
+              {loadError ? statusText["load-error"] : statusText[status ?? ""]}
+            </p>
+          )}
+
+          <nav className="admin-tabs" aria-label="Content sections"><a href="#news">ព័ត៌មាន</a><a href="#teachers">គ្រូ</a><a href="#gallery">រូបភាព</a><a href="#videos">វីដេអូ</a></nav>
 
         <section className="admin-section panel" id="news">
           <SectionHeading title="ព័ត៌មាន" count={news.length} />
@@ -102,6 +119,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <VideoForm />
           <div className="record-list">{videos.map((item) => <VideoForm key={item.id} item={item} />)}</div>
         </section>
+        </div>
       </div>
     </main>
   );
@@ -129,8 +147,8 @@ function SetupNotice({ userId, needsSchema = false }: { userId: string; needsSch
   );
 }
 
-function Stat({ n, t }: { n: number; t: string }) {
-  return <div className="stat"><b>{n}</b><span>{t}</span></div>;
+function Stat({ n, t, icon, tone }: { n: number; t: string; icon: string; tone: string }) {
+  return <div className={`stat stat-${tone}`}><i>{icon}</i><div><b>{n}</b><span>{t}</span></div></div>;
 }
 
 function SectionHeading({ title, count }: { title: string; count: number }) {
