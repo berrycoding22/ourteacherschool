@@ -1,12 +1,14 @@
 import Link from "next/link";
 import VideoCard from "./VideoCard";
+import { createClient } from "../lib/supabase/server";
+import { defaultVideos, type Video } from "../lib/videos";
 
 const nav = [
   ["ទំព័រដើម", "/"],
   ["អំពីសាលា", "/about"],
   ["គ្រូបង្រៀន", "/teachers"],
   ["សកម្មភាព", "/gallery"],
-  ["វីដេអូ", "/videos"],
+  ["វីដេអូបង្រៀន", "/videos"],
   ["ព័ត៌មាន", "/news"],
   ["ទំនាក់ទំនង", "/contact"],
 ];
@@ -16,7 +18,16 @@ const locations = [
   { text: "ផ្ទះលេខ 241 និងផ្ទះលេខ 355 ផ្លូវលេខ 11 ក្នុងបុរីពិភពថ្មីចម្ការដូង", href: "https://maps.app.goo.gl/5RYnJe8KpaPzhQCFA" },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("videos")
+    .select("id,title_km,youtube_id,description_km")
+    .eq("published", true)
+    .order("created_at", { ascending: false })
+    .limit(3);
+  const featuredVideos = ((data?.length ? data : defaultVideos.slice(0, 3)) as Video[]);
+
   return (
     <main>
       <header className="site-header">
@@ -93,24 +104,9 @@ export default function Home() {
 
       <section className="section video-section">
         <div className="wrap">
-          <SectionHeading kicker="YOUTUBE LEARNING" title="វីដេអូបង្រៀន និងចំណេះដឹង" href="https://www.youtube.com/@ourteacherschool1" external />
+          <SectionHeading kicker="YOUTUBE LEARNING" title="វីដេអូបង្រៀន និងចំណេះដឹង" href="/videos" />
           <div className="video-grid">
-            <VideoCard title="💁‍♀️ហេតុអ្វីបានជាសិស្សានុសិស្សពិបាកក្នុងការដោះស្រាយចំណោទ?" youtubeId="vrsz0mPgqMM" />
-            <VideoCard title="💁‍♀️ហេតុអ្វីបានជាសិស្សខ្សោយការអាន និងសរសេរភាសាខ្មែរ?" youtubeId="oJs5lGB-CUo" />
-            <VideoCard title="ថ្នាក់ទី២​ មេរៀនទី២០ ព្យព្ជានៈផ្ញើជើង | អ្នកគ្រូ សារ៉ាត់ ប្រាស្នា" youtubeId="opwNDRbL1Q0" />
-            <VideoCard title="ថ្នាក់ទី៣​ ចំណោត ប្រមាណវិធីចែក | អ្នកគ្រូ សារ៉ាត់ ប្រាស្នា" youtubeId="VJs3nA5GJB0" />
-            <VideoCard title="ថ្នាក់ទី៤ គណិតវិទ្យា ចំណោទប្រមាណវិធីគុណ | អ្នកគ្រូ ណាល់ មុន្នីនាថ" youtubeId="QLpjpW8sHnE" />
-            <VideoCard title="ថ្នាក់ទី៦ ចំណោទ(ទំព័រទី២៨) | អ្នកគ្រូ ប៉ន ចាន់ស្រីណែត" youtubeId="VKhmuJeCst4?list=PLQlRIEGekd-HUht0LFH4o-CgMGfcKwwrX" />
-            <VideoCard title="ថ្នាក់ទី៧ គណិតវិទ្យា ការសរសេរចំនួនទសភាគខួបជាប្រភាគ | អ្នកគ្រូ ផង់ ស្រីនាត" youtubeId="K2Q9BBvugVA" />
-            <VideoCard title="ថ្នាក់ទី ៨ គីមីវិទ្យា គណនាម៉ាសសូលុយស្យុងនិងម៉ាសទឹក | អ្នកគ្រូ ម៉េស ស្រីនីត" youtubeId="R70oRXMjjJo" />
-            <VideoCard title="ថ្នាក់ទី៩ គណិតវិទ្យា ឬសការ៉េ តគ្នា | លោកគ្រូ ប់ែត ម៉េងហុង" youtubeId="vArYnYAcp-M?list=PLQlRIEGekd-EOEtUEL8KvT0M9ri_i2dx9" />
-            <VideoCard title="ថ្នាក់ទី ៩ គណិតវិទ្យា ដោះស្រាយប្រព័ន្ធវិសមីការ | អ្នកគ្រូ ឈឺន កញ្ញា" youtubeId="kgYUnV5d1U4" />
-            <VideoCard title="ថ្នាក់ទី៩ វិញ្ញាសាររូបវិទ្យា ត្រៀមប្រឡងឌីប្លូម ២០២៥ | អ្នកគ្រូ សំហឿន នីតា" youtubeId="ZV1Sg41N9wM?list=PLQlRIEGekd-GrzhchDmXZB4oak82wCet3" />
-            <VideoCard title="ថ្នាក់ទី១០ រូបវិទ្យា ការគណនាប្រេកង់តង់ស្យុងឆ្លាស់ | លោកគ្រូ ថាត បូរី" youtubeId="vIX7U3nnQW4" />
-            <VideoCard title="កំណែវិញ្ញាសារត្រៀមប្របាក់ឌុបឆ្នាំ ២០២២ សម្រាប់ប្អូនៗរៀនត្រៀមបាក់ឌុប | អ្នកគ្រូ ជា សុខនា" youtubeId="WPR8TYzxzsM" />
-            <VideoCard title="ថ្នាក់ទី១២ គីមីវិទ្យា ការសំយោគអេស្ទែ | អ្នកគ្រូ យឹម សុឃន់" youtubeId="Ft6KTOuS69U" />
-            <VideoCard title="ថ្នាក់ទី១២ គណិតវិទ្យា គណនាអាំងតេក្រាល | អ្នកគ្រូ កាក់ តី" youtubeId="ES21NEdiDuQ" />
-
+            {featuredVideos.map((video) => <VideoCard key={video.id} title={video.title_km} youtubeId={video.youtube_id} />)}
           </div>
         </div>
       </section>

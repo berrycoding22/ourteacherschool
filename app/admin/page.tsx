@@ -69,7 +69,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{news.length}</span></Link>
             <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></Link>
             <Link href="/admin?section=gallery" className={activeSection === "gallery" ? "active" : ""}><i>▧</i> រូបភាព <span>{gallery.length}</span></Link>
-            <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូ <span>{videos.length}</span></Link>
+            <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
           </nav>
           <div className="admin-sidebar-footer"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
         </aside>
@@ -119,7 +119,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         </section>}
 
         {activeSection === "videos" && <section className="admin-section panel" id="videos">
-          <SectionHeading title="វីដេអូ" count={videos.length} />
+          <SectionHeading title="វីដេអូបង្រៀន" count={videos.length} />
           <VideoForm section="videos" />
           <div className="record-list">{videos.map((item) => <RecordEditor key={item.id} title={item.title_km} meta={item.published ? "Published" : "Draft"}><VideoForm item={item} section="videos" /></RecordEditor>)}</div>
         </section>}
@@ -232,7 +232,7 @@ function VideoForm({ item, section }: { item?: VideoRow; section: AdminSection }
     <input type="hidden" name="section" value={section} />
     <Field label="ចំណងជើង (ខ្មែរ)" name="title_km" value={item?.title_km} required />
     <Field label="ចំណងជើង (English)" name="title_en" value={item?.title_en} />
-    <Field label="YouTube video ID" name="youtube_id" value={item?.youtube_id} required />
+    <Field label="YouTube Video ID" name="youtube_id" value={item?.youtube_id} required />
     <TextArea label="ការពិពណ៌នា" name="description_km" value={item?.description_km} />
     <Published checked={item?.published ?? true} />
     <FormButtons editing={Boolean(item)} deleteAction={item ? deleteVideo : undefined} id={item?.id} />

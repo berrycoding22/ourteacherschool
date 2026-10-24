@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
+import { defaultVideos, type Video } from "../../lib/videos";
 
 const pageMeta = {
   about: ["ABOUT OUR SCHOOL", "អំពី Our Teacher School"],
@@ -16,7 +17,7 @@ const navigation = [
   ["អំពីសាលា", "/about"],
   ["គ្រូបង្រៀន", "/teachers"],
   ["សកម្មភាព", "/gallery"],
-  ["វីដេអូ", "/videos"],
+  ["វីដេអូបង្រៀន", "/videos"],
   ["ព័ត៌មាន", "/news"],
   ["ទំនាក់ទំនង", "/contact"],
 ];
@@ -24,26 +25,8 @@ const navigation = [
 type PageSlug = keyof typeof pageMeta;
 type Teacher = { id: number; name_km: string; name_en: string | null; subject_km: string | null; subject_en: string | null; bio_km: string | null; photo_url: string | null };
 type GalleryItem = { id: number; title_km: string | null; image_url: string; category: string | null };
-type Video = { id: number; title_km: string; youtube_id: string; description_km: string | null };
 type News = { id: number; title_km: string; content_km: string | null; cover_url: string | null; created_at: string };
 
-const homeVideos: Video[] = [
-  { id: 1, title_km: "💁‍♀️ហេតុអ្វីបានជាសិស្សានុសិស្សពិបាកក្នុងការដោះស្រាយចំណោទ?", youtube_id: "vrsz0mPgqMM", description_km: null },
-  { id: 2, title_km: "💁‍♀️ហេតុអ្វីបានជាសិស្សខ្សោយការអាន និងសរសេរភាសាខ្មែរ?", youtube_id: "oJs5lGB-CUo", description_km: null },
-  { id: 3, title_km: "ថ្នាក់ទី២ មេរៀនទី២០ ព្យព្ជានៈផ្ញើជើង | អ្នកគ្រូ សារ៉ាត់ ប្រាស្នា", youtube_id: "opwNDRbL1Q0", description_km: null },
-  { id: 4, title_km: "ថ្នាក់ទី៣ ចំណោត ប្រមាណវិធីចែក | អ្នកគ្រូ សារ៉ាត់ ប្រាស្នា", youtube_id: "VJs3nA5GJB0", description_km: null },
-  { id: 5, title_km: "ថ្នាក់ទី៤ គណិតវិទ្យា ចំណោទប្រមាណវិធីគុណ | អ្នកគ្រូ ណាល់ មុន្នីនាថ", youtube_id: "QLpjpW8sHnE", description_km: null },
-  { id: 6, title_km: "ថ្នាក់ទី៦ មេរៀនគណិតវិទ្យា | អ្នកគ្រូ ប៉ន ចាន់ស្រីណែត", youtube_id: "VKhmuJeCst4?list=PLQlRIEGekd-HUht0LFH4o-CgMGfcKwwrX", description_km: null },
-  { id: 7, title_km: "ថ្នាក់ទី៧ គណិតវិទ្យា ការសរសេរចំនួនទសភាគខួបជាប្រភាគ", youtube_id: "K2Q9BBvugVA", description_km: null },
-  { id: 8, title_km: "ថ្នាក់ទី៨ គីមីវិទ្យា គណនាម៉ាសសូលុយស្យុង និងម៉ាសទឹក", youtube_id: "R70oRXMjjJo", description_km: null },
-  { id: 9, title_km: "ថ្នាក់ទី៩ គណិតវិទ្យា ឬសការ៉េតគ្នា", youtube_id: "vArYnYAcp-M?list=PLQlRIEGekd-EOEtUEL8KvT0M9ri_i2dx9", description_km: null },
-  { id: 10, title_km: "ថ្នាក់ទី៩ ដោះស្រាយប្រព័ន្ធវិសមីការ", youtube_id: "kgYUnV5d1U4", description_km: null },
-  { id: 11, title_km: "ថ្នាក់ទី៩ វិញ្ញាសាររូបវិទ្យា ត្រៀមប្រឡងឌីប្លូម ២០២៥", youtube_id: "ZV1Sg41N9wM?list=PLQlRIEGekd-GrzhchDmXZB4oak82wCet3", description_km: null },
-  { id: 12, title_km: "ថ្នាក់ទី១០ រូបវិទ្យា ការគណនាប្រេកង់តង់ស្យុងឆ្លាស់", youtube_id: "vIX7U3nnQW4", description_km: null },
-  { id: 13, title_km: "កំណែវិញ្ញាសារត្រៀមប្របាក់ឌបឆ្នាំ ២០២២", youtube_id: "WPR8TYzxzsM", description_km: null },
-  { id: 14, title_km: "ថ្នាក់ទី១២ គីមីវិទ្យា ការសំយោគអេស្ទែ", youtube_id: "Ft6KTOuS69U", description_km: null },
-  { id: 15, title_km: "ថ្នាក់ទី១២ គណិតវិទ្យា គណនាអាំងតេក្រាល", youtube_id: "ES21NEdiDuQ", description_km: null },
-];
 
 export default async function SitePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -109,5 +92,5 @@ function Teachers({ items }: { items: Teacher[] }) {
   ))}</div>;
 }
 function Gallery({ items }: { items: GalleryItem[] }) { if (!items.length) return <Empty>មិនទាន់មានរូបភាពសកម្មភាពទេ។ សូមបន្ថែមរូបភាពនៅក្នុង Admin Dashboard។</Empty>; return <div className="gallery-grid">{items.map((item) => <figure key={item.id}><img src={item.image_url} alt={item.title_km || "School activity"} /><figcaption>{item.title_km || item.category || "សកម្មភាពសាលា"}</figcaption></figure>)}</div>; }
-function Videos({ items }: { items: Video[] }) { const videos = items.length ? items : homeVideos; return <div className="content-video-grid">{videos.map((item) => <article className="content-video-card" key={item.id}><h2>{item.title_km}</h2><div className="video-wrapper"><iframe src={`https://www.youtube.com/embed/${item.youtube_id}`} title={item.title_km} loading="lazy" allowFullScreen /></div>{item.description_km && <p>{item.description_km}</p>}</article>)}</div>; }
+function Videos({ items }: { items: Video[] }) { const videos = items.length ? items : defaultVideos; return <div className="content-video-grid">{videos.map((item) => <article className="content-video-card" key={item.id}><h2>{item.title_km}</h2><div className="video-wrapper"><iframe src={`https://www.youtube.com/embed/${item.youtube_id}`} title={item.title_km} loading="lazy" allowFullScreen /></div>{item.description_km && <p>{item.description_km}</p>}</article>)}</div>; }
 function NewsList({ items }: { items: News[] }) { if (!items.length) return <Empty>មិនទាន់មានព័ត៌មានថ្មីទេ។ សូមពិនិត្យម្តងទៀតនៅពេលក្រោយ។</Empty>; return <div className="news-list">{items.map((item) => <article className="news-item" key={item.id}>{item.cover_url && <img src={item.cover_url} alt={item.title_km} />}<div><time>{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(item.created_at))}</time><h2>{item.title_km}</h2>{item.content_km && <p>{item.content_km}</p>}</div></article>)}</div>; }
