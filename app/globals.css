@@ -1633,15 +1633,15 @@ a {
 }
 
 @media(max-width:900px) {
-    .admin-sidebar { position: sticky; display: flex; align-items: center; width: 100%; min-height: 74px; padding: 12px 20px; }
-    .admin-brand { flex: 1; }
+    .admin-sidebar { position: sticky; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; width: 100%; min-height: 72px; padding: 10px 20px; }
+    .admin-brand { min-width: 0; padding: 0; justify-self: start; }
     .admin-desktop-nav { display: none; }
     .admin-mobile-nav { position: relative; order: 2; flex: 0 0 auto; margin-left: 8px; }
     .admin-mobile-nav summary { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid #ffffff2b; border-radius: 10px; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; list-style: none; }
     .admin-mobile-nav summary::-webkit-details-marker { display: none; }
     .admin-mobile-nav summary:hover { background: #ffffff14; }
     .admin-mobile-nav .admin-side-nav { display: none; }
-    .admin-mobile-nav[open] .admin-side-nav { position: absolute; top: calc(100% + 12px); right: 0; display: grid; width: min(300px, calc(100vw - 32px)); gap: 5px; padding: 10px; border: 1px solid #ffffff20; border-radius: 14px; background: #121a3d; box-shadow: 0 18px 38px #08102c55; }
+    .admin-mobile-nav[open] .admin-side-nav { position: fixed; top: 84px; right: 14px; left: 14px; display: grid; width: auto; max-height: calc(100vh - 100px); gap: 5px; padding: 10px; overflow-y: auto; border: 1px solid #ffffff20; border-radius: 16px; background: #121a3d; box-shadow: 0 18px 38px #08102c55; }
     .admin-mobile-nav[open] .admin-side-nav a { min-height: 44px; padding: 0 12px; font-size: 14px; }
     .admin-mobile-nav[open] .admin-side-nav span { display: block; }
     .admin-sidebar-footer { order: 3; display: flex; width: auto; margin: 0 0 0 8px; padding: 0; border: 0; }
@@ -1649,9 +1649,10 @@ a {
 }
 
 @media(max-width:700px) {
-    .admin-sidebar { padding: 11px 16px; }
+    .admin-sidebar { padding: 10px 16px; }
     .admin-brand img { width: 39px; height: 39px; }
     .admin-brand { gap: 9px; }
+    .admin-brand small { font-size: 8px; }
     .admin-sidebar-footer a { display: none; }
     .admin-sidebar-footer button { font-size: 12px; }
 }
