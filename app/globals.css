@@ -1642,11 +1642,11 @@ a {
     .admin-mobile-nav summary::-webkit-details-marker { display: none; }
     .admin-mobile-nav summary:hover { background: #ffffff14; }
     .admin-mobile-nav .admin-side-nav { display: none; }
-    .admin-mobile-nav[open] .admin-side-nav { position: fixed; top: 72px; right: 0; left: auto; display: grid; width: min(310px, calc(100vw - 34px)); max-height: calc(100vh - 84px); gap: 5px; padding: 16px 12px; overflow-y: auto; align-content: start; border: 1px solid #ffffff20; border-right: 0; border-radius: 16px 0 0 16px; background: #121a3d; box-shadow: -16px 18px 38px #08102c55; }
-    .admin-mobile-nav[open] .admin-side-nav a { min-height: 44px; padding: 0 12px; font-size: 14px; }
+    .admin-mobile-nav[open] .admin-side-nav { position: fixed; top: 72px; right: 0; left: auto; display: grid; width: min(260px, calc(100vw - 34px)); max-height: calc(100vh - 84px); gap: 2px; padding: 10px 8px; overflow-y: auto; align-content: start; border: 1px solid #ffffff20; border-right: 0; border-radius: 14px 0 0 14px; background: #121a3d; box-shadow: -14px 16px 30px #08102c44; }
+    .admin-mobile-nav[open] .admin-side-nav a { min-height: 38px; padding: 0 10px; font-size: 13px; }
     .admin-mobile-nav[open] .admin-side-nav span { display: block; }
-    .admin-mobile-menu-actions { display: grid; gap: 4px; margin-top: 8px; padding-top: 10px; border-top: 1px solid #ffffff1d; }
-    .admin-mobile-menu-actions a, .admin-mobile-menu-actions button { display: block; width: 100%; min-height: 40px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #cbd2f4; font: inherit; font-size: 13px; font-weight: 700; line-height: 40px; text-align: left; cursor: pointer; }
+    .admin-mobile-menu-actions { display: grid; gap: 2px; margin-top: 5px; padding-top: 7px; border-top: 1px solid #ffffff1d; }
+    .admin-mobile-menu-actions a, .admin-mobile-menu-actions button { display: block; width: 100%; min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: #cbd2f4; font: inherit; font-size: 12px; font-weight: 700; line-height: 34px; text-align: left; cursor: pointer; }
     .admin-mobile-menu-actions a:hover, .admin-mobile-menu-actions button:hover { background: #ffffff14; color: #fff; }
     .admin-sidebar-footer { display: none; }
 }
