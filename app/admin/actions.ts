@@ -220,6 +220,17 @@ export async function deleteActivity(formData: FormData) {
   redirect(adminPath(formData, "deleted"));
 }
 
+export async function deleteActivityPhoto(formData: FormData) {
+  const rawPhotoId = value(formData, "photo_id");
+  const photoId = Number(rawPhotoId);
+  if (!Number.isSafeInteger(photoId) || photoId < 1) redirect(adminPath(formData, "save-error"));
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("activity_photos").delete().eq("id", photoId);
+  if (error) redirect(adminPath(formData, "delete-error"));
+  await refreshContent();
+  redirect(adminPath(formData, "saved"));
+}
+
 export async function updateInquiryStatus(formData: FormData) {
   const id = rowId(formData);
   const status = value(formData, "status");

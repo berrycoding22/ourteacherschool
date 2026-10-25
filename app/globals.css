@@ -1058,6 +1058,16 @@ a {
 .inquiry-details { grid-column: 1 / -1; padding: 16px; border-radius: 10px; background: #f5f8fd; color: #53627d; line-height: 1.8; }
 .inquiry-details b { color: #24345e; }
 .inquiry-details p { margin: 4px 0 0; white-space: pre-line; }
+.admin-image-preview { grid-column: 1 / -1; display: flex; align-items: center; gap: 13px; min-height: 78px; padding: 10px; border: 1px dashed #b7c8e8; border-radius: 11px; background: #f5f8ff; }
+.admin-image-preview img { width: 96px; height: 58px; border-radius: 7px; object-fit: cover; }
+.admin-image-preview span { color: #60708f; font-size: 12px; font-weight: 700; }
+.activity-photo-manager { grid-column: 1 / -1; padding: 14px; border: 1px solid #dce5f2; border-radius: 11px; background: #f7f9fd; }
+.activity-photo-manager > b { display: block; margin-bottom: 10px; color: #465570; font-size: 13px; }
+.activity-photo-manager > div { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.activity-photo-manager figure { position: relative; margin: 0; overflow: hidden; border: 1px solid #dce5f2; border-radius: 8px; background: #fff; }
+.activity-photo-manager img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+.activity-photo-manager button { position: absolute; right: 5px; bottom: 5px; padding: 4px 7px; border: 0; border-radius: 6px; background: #9d3030e8; color: #fff; font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; }
+.activity-photo-manager button:hover { background: #7e2020; }
 
 .admin-message {
     padding: 13px 16px;
@@ -1656,4 +1666,30 @@ a {
     .admin-brand img { width: 39px; height: 39px; }
     .admin-brand { gap: 9px; }
     .admin-brand small { font-size: 8px; }
+}
+
+/* Final mobile safeguards for every Admin section. */
+.admin-main, .admin-section, .panel, .record-editor > div { min-width: 0; }
+.record-editor > div { flex: 1 1 auto; }
+.record-editor > button { flex: 0 0 auto; white-space: nowrap; }
+
+@media(max-width:520px) {
+    .admin-main { overflow-x: clip; }
+    .admin-section-heading { align-items: flex-start; gap: 10px; }
+    .admin-section-heading h2 { font-size: 20px; line-height: 1.35; }
+    .content-form { gap: 12px; }
+    .admin-field input, .admin-field textarea, .admin-field select { font-size: 16px; }
+    .admin-field textarea { min-height: 108px; }
+    .admin-check { min-height: 42px; align-items: center; }
+    .admin-form-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+    .admin-form-actions .btn { width: 100%; min-width: 0; padding: 0 8px; }
+    .record-editor { gap: 10px; min-height: 68px; padding: 12px 0; }
+    .record-editor b { font-size: 14px; }
+    .record-editor small { font-size: 10px; }
+    .record-editor button { display: grid; min-width: 74px; min-height: 38px; place-items: center; padding: 0 8px; font-size: 12px; }
+    .record-dialog header h2 { display: -webkit-box; overflow: hidden; font-size: 20px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .record-dialog-content { overscroll-behavior: contain; }
+    .admin-image-preview img { width: 82px; height: 54px; }
+    .activity-photo-manager { padding: 12px; }
+    .activity-photo-manager > div { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 }

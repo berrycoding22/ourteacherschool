@@ -3,8 +3,10 @@ import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 import RecordEditor from "./RecordEditor";
 import AdminMobileMenu from "./AdminMobileMenu";
+import ImagePicker from "./ImagePicker";
 import {
   deleteActivity,
+  deleteActivityPhoto,
   deleteInquiry,
   deleteNews,
   deleteTeacher,
@@ -18,7 +20,7 @@ import {
 
 type NewsRow = { id: number; title_km: string; title_en: string | null; content_km: string | null; content_en: string | null; cover_url: string | null; published: boolean };
 type TeacherRow = { id: number; name_km: string; name_en: string | null; subject_km: string | null; subject_en: string | null; bio_km: string | null; photo_url: string | null };
-type ActivityRow = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; published: boolean; activity_photos?: { count: number }[] };
+type ActivityRow = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; published: boolean; activity_photos?: { id: number; image_url: string; sort_order: number }[] };
 type VideoRow = { id: number; title_km: string; title_en: string | null; youtube_id: string; description_km: string | null; published: boolean };
 type InquiryRow = { id: number; guardian_name: string; phone: string; student_name: string | null; interested_class: string | null; message: string | null; status: "new" | "contacted" | "enrolled" | "closed"; created_at: string };
 type AdminSection = "overview" | "news" | "teachers" | "activities" | "videos" | "inquiries";
@@ -53,7 +55,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const [newsResult, teachersResult, activitiesResult, videosResult, inquiriesResult] = await Promise.all([
     supabase.from("news").select("id,title_km,title_en,content_km,content_en,cover_url,published").order("created_at", { ascending: false }),
     supabase.from("teachers").select("id,name_km,name_en,subject_km,subject_en,bio_km,photo_url").order("created_at", { ascending: false }),
-    supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,published,activity_photos(count)").order("activity_date", { ascending: false }),
+    supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,published,activity_photos(id,image_url,sort_order)").order("activity_date", { ascending: false }),
     supabase.from("videos").select("id,title_km,title_en,youtube_id,description_km,published").order("created_at", { ascending: false }),
     supabase.from("enrollment_inquiries").select("id,guardian_name,phone,student_name,interested_class,message,status,created_at").order("created_at", { ascending: false }),
   ]);
@@ -134,7 +136,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         {activeSection === "activities" && <section className="admin-section panel" id="activities">
           <SectionHeading title="អាល់ប៊ុមសកម្មភាព" count={activities.length} />
           <ActivityForm section="activities" />
-          <div className="record-list">{activities.map((item) => <RecordEditor key={item.id} title={item.title_km} meta={`${item.activity_photos?.[0]?.count ?? 0} រូបភាព`}><ActivityForm item={item} section="activities" /></RecordEditor>)}</div>
+          <div className="record-list">{activities.map((item) => <RecordEditor key={item.id} title={item.title_km} meta={`${item.activity_photos?.length ?? 0} រូបភាព`}><ActivityForm item={item} section="activities" /></RecordEditor>)}</div>
         </section>}
 
         {activeSection === "videos" && <section className="admin-section panel" id="videos">
@@ -191,12 +193,7 @@ function TextArea({ label, name, value }: { label: string; name: string; value?:
   return <label className="admin-field admin-field-wide">{label}<textarea name={name} rows={3} defaultValue={value ?? ""} /></label>;
 }
 
-function ImageFields({ label, name, value }: { label: string; name: string; value?: string | null }) {
-  return <>
-    <Field label={`${label} URL (ជម្រើស)`} name={name} value={value} type="url" />
-    <label className="admin-field">Upload រូបភាពពីកុំព្យូទ័រ<input name="image_file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" /></label>
-  </>;
-}
+function ImageFields({ label, name, value }: { label: string; name: string; value?: string | null }) { return <ImagePicker label={label} name={name} value={value} />; }
 
 function Published({ checked }: { checked: boolean }) {
   return <label className="admin-check"><input name="published" type="checkbox" defaultChecked={checked} /> បង្ហាញលើ Website</label>;
@@ -246,6 +243,7 @@ function ActivityForm({ item, section }: { item?: ActivityRow; section: AdminSec
     <ImageFields label="រូបភាព Cover" name="cover_url" value={item?.cover_url} />
     <label className="admin-field">ជំនួសរូបភាពក្នុងអាល់ប៊ុម<input name="activity_images" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple /></label>
     <TextArea label="ការពិពណ៌នាសកម្មភាព" name="description_km" value={item?.description_km} />
+    {!!item?.activity_photos?.length && <div className="activity-photo-manager"><b>រូបភាពក្នុងអាល់ប៊ុម</b><div>{item.activity_photos.sort((a, b) => a.sort_order - b.sort_order).map((photo) => <figure key={photo.id}><img src={photo.image_url} alt="រូបភាពសកម្មភាព" /><button type="submit" formAction={deleteActivityPhoto} formNoValidate name="photo_id" value={photo.id}>លុប</button></figure>)}</div></div>}
     <Published checked={item?.published ?? true} />
     <FormButtons editing={Boolean(item)} deleteAction={item ? deleteActivity : undefined} id={item?.id} />
   </form>;
