@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 import RecordEditor from "./RecordEditor";
+import AdminMobileMenu from "./AdminMobileMenu";
 import {
   deleteActivity,
   deleteInquiry,
@@ -77,8 +78,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
             <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
           </nav>
-          <details className="admin-mobile-nav">
-            <summary aria-label="បើកម៉ឺនុយគ្រប់គ្រង">☰</summary>
+          <AdminMobileMenu>
             <nav className="admin-side-nav" aria-label="Content sections">
               <Link href="/admin" className={activeSection === "overview" ? "active" : ""}><i>⌘</i> ទិដ្ឋភាពទូទៅ</Link>
               <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{news.length}</span></Link>
@@ -88,7 +88,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
               <div className="admin-mobile-menu-actions"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
             </nav>
-          </details>
+          </AdminMobileMenu>
           <div className="admin-sidebar-footer"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
         </aside>
 
