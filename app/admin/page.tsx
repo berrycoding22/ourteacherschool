@@ -220,7 +220,7 @@ function ActivityForm({ item, section }: { item?: ActivityRow; section: AdminSec
     <Field label="ចំណងជើងសកម្មភាព (ខ្មែរ)" name="title_km" value={item?.title_km} required />
     <Field label="កាលបរិច្ឆេទ" name="activity_date" value={item?.activity_date} type="date" />
     <ImageFields label="រូបភាព Cover" name="cover_url" value={item?.cover_url} />
-    <label className="admin-field">បន្ថែមរូបភាពក្នុងអាល់ប៊ុម<input name="activity_images" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple /></label>
+    <label className="admin-field">ជំនួសរូបភាពក្នុងអាល់ប៊ុម<input name="activity_images" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple /></label>
     <TextArea label="ការពិពណ៌នាសកម្មភាព" name="description_km" value={item?.description_km} />
     <Published checked={item?.published ?? true} />
     <FormButtons editing={Boolean(item)} deleteAction={item ? deleteActivity : undefined} id={item?.id} />

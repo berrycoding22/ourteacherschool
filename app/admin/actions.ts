@@ -161,6 +161,12 @@ async function uploadActivityPhotos(formData: FormData, albumId: number) {
   }
 
   const supabase = await requireAdmin();
+  const { data: existingPhotos, error: existingPhotosError } = await supabase
+    .from("activity_photos")
+    .select("id")
+    .eq("album_id", albumId);
+  if (existingPhotosError) redirect(adminPath(formData, "save-error"));
+
   const photos = [] as { album_id: number; image_url: string; sort_order: number }[];
   for (const [index, file] of files.entries()) {
     const extension = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
@@ -172,6 +178,12 @@ async function uploadActivityPhotos(formData: FormData, albumId: number) {
 
   const { error } = await supabase.from("activity_photos").insert(photos);
   if (error) redirect(adminPath(formData, "save-error"));
+
+  const existingIds = (existingPhotos ?? []).map((photo) => photo.id);
+  if (existingIds.length) {
+    const { error: deleteError } = await supabase.from("activity_photos").delete().in("id", existingIds);
+    if (deleteError) redirect(adminPath(formData, "save-error"));
+  }
 }
 
 export async function saveActivity(formData: FormData) {
