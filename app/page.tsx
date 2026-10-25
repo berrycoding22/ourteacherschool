@@ -3,6 +3,7 @@ import VideoCard from "./VideoCard";
 import { createClient } from "../lib/supabase/server";
 import { defaultVideos, type Video } from "../lib/videos";
 import { submitEnrollmentInquiry } from "./enrollment-actions";
+import NewsImagePreview from "./NewsImagePreview";
 
 const nav = [
   ["ទំព័រដើម", "/"],
@@ -132,7 +133,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ i
             <Link href="/news" className="btn btn-navy">មើលព័ត៌មានទាំងអស់</Link>
           </div>
           <div className="news-placeholder">
-            {latestNews ? <><div className="news-date">{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(latestNews.created_at))}</div>{latestNews.cover_url && <img className="home-news-image" src={latestNews.cover_url} alt={latestNews.title_km} />}<h3>{latestNews.title_km}</h3>{latestNews.content_km && <p>{latestNews.content_km}</p>}<Link href="/news" className="text-link">មើលព័ត៌មាន →</Link></> : <><div className="news-date">LATEST</div><h3>ព័ត៌មានថ្មីៗពី Our Teacher School</h3><p>កន្លែងសម្រាប់បង្ហាញព័ត៌មាន សកម្មភាព និងសេចក្តីជូនដំណឹងសំខាន់ៗ។</p><Link href="/news" className="text-link">មើលព័ត៌មាន →</Link></>}
+            {latestNews ? <><div className="news-date">{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(latestNews.created_at))}</div>{latestNews.cover_url && <><img className="home-news-image" src={latestNews.cover_url} alt={latestNews.title_km} /><NewsImagePreview src={latestNews.cover_url} alt={latestNews.title_km} /></>}<h3>{latestNews.title_km}</h3>{latestNews.content_km && <p>{latestNews.content_km}</p>}<Link href="/news" className="text-link">មើលព័ត៌មាន →</Link></> : <><div className="news-date">LATEST</div><h3>ព័ត៌មានថ្មីៗពី Our Teacher School</h3><p>កន្លែងសម្រាប់បង្ហាញព័ត៌មាន សកម្មភាព និងសេចក្តីជូនដំណឹងសំខាន់ៗ។</p><Link href="/news" className="text-link">មើលព័ត៌មាន →</Link></>}
           </div>
         </div>
       </section>
