@@ -558,6 +558,20 @@ a {
 
 .home-news-image { display: block; width: 100%; max-height: 230px; margin: 18px 0; border-radius: 14px; object-fit: cover; }
 
+.enrollment-section { background: linear-gradient(120deg, #17265c, #253b86); color: #fff; }
+.enrollment-layout { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
+.enrollment-layout h2 { margin: 7px 0 14px; font-size: clamp(32px, 4vw, 47px); line-height: 1.25; }
+.enrollment-layout > div > p { max-width: 470px; margin: 0; color: #d7e2ff; line-height: 1.85; }
+.enrollment-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 25px; border: 1px solid #ffffff28; border-radius: 20px; background: #ffffff12; box-shadow: 0 20px 42px #080f3226; }
+.enrollment-form label { display: grid; gap: 7px; color: #fff; font-size: 13px; font-weight: 700; }
+.enrollment-form input, .enrollment-form textarea { width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid #ffffff3d; border-radius: 9px; background: #fff; color: var(--ink); font: inherit; font-weight: 400; }
+.enrollment-form textarea { resize: vertical; line-height: 1.6; }
+.enrollment-form input:focus, .enrollment-form textarea:focus { outline: 3px solid #e9ca6b55; border-color: var(--gold); }
+.enrollment-field-wide, .enrollment-message { grid-column: 1 / -1; }
+.enrollment-message { margin: 0; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+.enrollment-message.success { background: #d8f6df; color: #176531; }
+.enrollment-message.error { background: #ffe5df; color: #9a3228; }
+
 .contact-strip {
     background: var(--navy-dark);
     color: #fff;
@@ -914,7 +928,8 @@ a {
 }
 
 .admin-field input,
-.admin-field textarea {
+.admin-field textarea,
+.admin-field select {
     width: 100%;
     min-width: 0;
     padding: 10px 12px;
@@ -930,13 +945,16 @@ a {
     min-height: 44px;
 }
 
+.admin-field select { min-height: 44px; }
+
 .admin-field textarea {
     resize: vertical;
     line-height: 1.6;
 }
 
 .admin-field input:focus,
-.admin-field textarea:focus {
+.admin-field textarea:focus,
+.admin-field select:focus {
     outline: 3px solid #4386d52b;
     border-color: #4386d5;
 }
@@ -978,6 +996,10 @@ a {
 .adminpage .btn-danger:hover {
     background: #ffeded;
 }
+
+.inquiry-details { grid-column: 1 / -1; padding: 16px; border-radius: 10px; background: #f5f8fd; color: #53627d; line-height: 1.8; }
+.inquiry-details b { color: #24345e; }
+.inquiry-details p { margin: 4px 0 0; white-space: pre-line; }
 
 .admin-message {
     padding: 13px 16px;
@@ -1197,7 +1219,8 @@ a {
 
     .hero-grid,
     .two-col,
-    .contact-grid {
+    .contact-grid,
+    .enrollment-layout {
         grid-template-columns: 1fr;
         gap: 35px
     }
@@ -1315,6 +1338,8 @@ a {
     .video-grid {
         grid-template-columns: 1fr
     }
+
+    .enrollment-form { grid-template-columns: 1fr; padding: 20px; }
 
     .footer-grid {
         grid-template-columns: 1fr

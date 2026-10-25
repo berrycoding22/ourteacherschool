@@ -4,10 +4,12 @@ import { createClient } from "../../lib/supabase/server";
 import RecordEditor from "./RecordEditor";
 import {
   deleteActivity,
+  deleteInquiry,
   deleteNews,
   deleteTeacher,
   deleteVideo,
   saveActivity,
+  updateInquiryStatus,
   saveNews,
   saveTeacher,
   saveVideo,
@@ -17,8 +19,9 @@ type NewsRow = { id: number; title_km: string; title_en: string | null; content_
 type TeacherRow = { id: number; name_km: string; name_en: string | null; subject_km: string | null; subject_en: string | null; bio_km: string | null; photo_url: string | null };
 type ActivityRow = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; published: boolean; activity_photos?: { count: number }[] };
 type VideoRow = { id: number; title_km: string; title_en: string | null; youtube_id: string; description_km: string | null; published: boolean };
-type AdminSection = "overview" | "news" | "teachers" | "activities" | "videos";
-const adminSections: AdminSection[] = ["overview", "news", "teachers", "activities", "videos"];
+type InquiryRow = { id: number; guardian_name: string; phone: string; student_name: string | null; interested_class: string | null; message: string | null; status: "new" | "contacted" | "enrolled" | "closed"; created_at: string };
+type AdminSection = "overview" | "news" | "teachers" | "activities" | "videos" | "inquiries";
+const adminSections: AdminSection[] = ["overview", "news", "teachers", "activities", "videos", "inquiries"];
 
 const statusText: Record<string, string> = {
   saved: "បានរក្សាទុកមាតិកា។",
@@ -46,17 +49,19 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   if (grantError) return <SetupNotice userId={user.id} needsSchema />;
   if (!adminGrant) return <SetupNotice userId={user.id} />;
 
-  const [newsResult, teachersResult, activitiesResult, videosResult] = await Promise.all([
+  const [newsResult, teachersResult, activitiesResult, videosResult, inquiriesResult] = await Promise.all([
     supabase.from("news").select("id,title_km,title_en,content_km,content_en,cover_url,published").order("created_at", { ascending: false }),
     supabase.from("teachers").select("id,name_km,name_en,subject_km,subject_en,bio_km,photo_url").order("created_at", { ascending: false }),
     supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,published,activity_photos(count)").order("activity_date", { ascending: false }),
     supabase.from("videos").select("id,title_km,title_en,youtube_id,description_km,published").order("created_at", { ascending: false }),
+    supabase.from("enrollment_inquiries").select("id,guardian_name,phone,student_name,interested_class,message,status,created_at").order("created_at", { ascending: false }),
   ]);
-  const loadError = [newsResult, teachersResult, activitiesResult, videosResult].some((result) => result.error);
+  const loadError = [newsResult, teachersResult, activitiesResult, videosResult, inquiriesResult].some((result) => result.error);
   const news = (newsResult.data ?? []) as NewsRow[];
   const teachers = (teachersResult.data ?? []) as TeacherRow[];
   const activities = (activitiesResult.data ?? []) as ActivityRow[];
   const videos = (videosResult.data ?? []) as VideoRow[];
+  const inquiries = (inquiriesResult.data ?? []) as InquiryRow[];
 
   return (
     <main className="adminpage">
@@ -70,6 +75,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></Link>
             <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activities.length}</span></Link>
             <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
+            <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
           </nav>
           <div className="admin-sidebar-footer"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
         </aside>
@@ -90,6 +96,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             <Stat n={teachers.length} t="គ្រូបង្រៀន" icon="♙" tone="purple" />
             <Stat n={activities.length} t="សកម្មភាព" icon="▧" tone="gold" />
             <Stat n={videos.length} t="វីដេអូ" icon="▶" tone="teal" />
+            <Stat n={inquiries.filter((item) => item.status === "new").length} t="សំណើថ្មី" icon="✉" tone="blue" />
           </div></>}
 
           {(statusText[status ?? ""] || loadError) && (
@@ -98,7 +105,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
             </p>
           )}
 
-          <nav className="admin-tabs" aria-label="Content sections"><Link href="/admin?section=news">ព័ត៌មាន</Link><Link href="/admin?section=teachers">គ្រូ</Link><Link href="/admin?section=activities">សកម្មភាព</Link><Link href="/admin?section=videos">វីដេអូ</Link></nav>
+          <nav className="admin-tabs" aria-label="Content sections"><Link href="/admin?section=news">ព័ត៌មាន</Link><Link href="/admin?section=teachers">គ្រូ</Link><Link href="/admin?section=activities">សកម្មភាព</Link><Link href="/admin?section=videos">វីដេអូ</Link><Link href="/admin?section=inquiries">សំណើចុះឈ្មោះ</Link></nav>
 
         {activeSection === "news" && <section className="admin-section panel" id="news">
           <SectionHeading title="ព័ត៌មាន" count={news.length} />
@@ -122,6 +129,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <SectionHeading title="វីដេអូបង្រៀន" count={videos.length} />
           <VideoForm section="videos" />
           <div className="record-list">{videos.map((item) => <RecordEditor key={item.id} title={item.title_km} meta={item.published ? "Published" : "Draft"}><VideoForm item={item} section="videos" /></RecordEditor>)}</div>
+        </section>}
+
+        {activeSection === "inquiries" && <section className="admin-section panel" id="inquiries">
+          <SectionHeading title="សំណើចុះឈ្មោះ និងស្នើព័ត៌មាន" count={inquiries.length} />
+          <div className="record-list">{inquiries.map((item) => <RecordEditor key={item.id} title={item.guardian_name} meta={`${item.phone} · ${inquiryStatusText[item.status]}`}><InquiryForm item={item} section="inquiries" /></RecordEditor>)}</div>
         </section>}
         </div>
       </div>
@@ -224,6 +236,18 @@ function ActivityForm({ item, section }: { item?: ActivityRow; section: AdminSec
     <TextArea label="ការពិពណ៌នាសកម្មភាព" name="description_km" value={item?.description_km} />
     <Published checked={item?.published ?? true} />
     <FormButtons editing={Boolean(item)} deleteAction={item ? deleteActivity : undefined} id={item?.id} />
+  </form>;
+}
+
+const inquiryStatusText: Record<InquiryRow["status"], string> = { new: "ថ្មី", contacted: "បានទាក់ទង", enrolled: "បានចុះឈ្មោះ", closed: "បិទ" };
+
+function InquiryForm({ item, section }: { item: InquiryRow; section: AdminSection }) {
+  return <form action={updateInquiryStatus} className="content-form record-form">
+    <input type="hidden" name="id" value={item.id} />
+    <input type="hidden" name="section" value={section} />
+    <div className="inquiry-details"><b>អ្នកអាណាព្យាបាល៖</b> {item.guardian_name}<br /><b>លេខទូរស័ព្ទ៖</b> <a href={`tel:${item.phone}`}>{item.phone}</a><br />{item.student_name && <><b>ឈ្មោះសិស្ស៖</b> {item.student_name}<br /></>}{item.interested_class && <><b>ថ្នាក់ចាប់អារម្មណ៍៖</b> {item.interested_class}<br /></>}{item.message && <><b>សារ៖</b><p>{item.message}</p></>}</div>
+    <label className="admin-field">ស្ថានភាព<select name="status" defaultValue={item.status}><option value="new">ថ្មី</option><option value="contacted">បានទាក់ទង</option><option value="enrolled">បានចុះឈ្មោះ</option><option value="closed">បិទ</option></select></label>
+    <FormButtons editing deleteAction={deleteInquiry} id={item.id} />
   </form>;
 }
 

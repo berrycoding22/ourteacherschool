@@ -26,7 +26,7 @@ function rowId(formData: FormData) {
 
 function adminPath(formData: FormData, status: string) {
   const section = value(formData, "section");
-  const allowedSections = ["news", "teachers", "gallery", "activities", "videos"];
+  const allowedSections = ["news", "teachers", "gallery", "activities", "videos", "inquiries"];
   const params = new URLSearchParams({ status });
   if (allowedSections.includes(section)) params.set("section", section);
   return `/admin?${params.toString()}`;
@@ -48,7 +48,7 @@ async function requireAdmin() {
 }
 
 async function refreshContent() {
-  for (const path of ["/admin", "/", "/news", "/teachers", "/gallery", "/activities", "/videos"]) {
+  for (const path of ["/admin", "/", "/news", "/teachers", "/gallery", "/activities", "/videos", "/inquiries"]) {
     revalidatePath(path);
   }
 }
@@ -215,6 +215,27 @@ export async function deleteActivity(formData: FormData) {
   if (!id) redirect(adminPath(formData, "save-error"));
   const supabase = await requireAdmin();
   const { error } = await supabase.from("activity_albums").delete().eq("id", id);
+  if (error) redirect(adminPath(formData, "delete-error"));
+  await refreshContent();
+  redirect(adminPath(formData, "deleted"));
+}
+
+export async function updateInquiryStatus(formData: FormData) {
+  const id = rowId(formData);
+  const status = value(formData, "status");
+  if (!id || !["new", "contacted", "enrolled", "closed"].includes(status)) redirect(adminPath(formData, "save-error"));
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("enrollment_inquiries").update({ status }).eq("id", id);
+  if (error) redirect(adminPath(formData, "save-error"));
+  await refreshContent();
+  redirect(adminPath(formData, "saved"));
+}
+
+export async function deleteInquiry(formData: FormData) {
+  const id = rowId(formData);
+  if (!id) redirect(adminPath(formData, "save-error"));
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("enrollment_inquiries").delete().eq("id", id);
   if (error) redirect(adminPath(formData, "delete-error"));
   await refreshContent();
   redirect(adminPath(formData, "deleted"));
