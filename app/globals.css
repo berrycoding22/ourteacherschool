@@ -1571,6 +1571,7 @@ a {
 @media(min-width:901px) {
     .admin-sidebar { position: fixed; left: 0; width: 264px; z-index: 20; }
     .admin-main { grid-column: 2; }
+    .admin-mobile-nav .admin-side-nav { display: grid !important; }
 }
 .admin-field { color: #4c5a73; font-size: 12px; }
 .admin-field input, .admin-field textarea { border-color: #dce3ee; border-radius: 9px; background: #fff; }
