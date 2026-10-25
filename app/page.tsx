@@ -93,6 +93,20 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ i
         </div>
       </section>
 
+      <section className="section programs-section" id="programs">
+        <div className="wrap">
+          <div className="programs-heading"><div><div className="section-kicker">OUR PROGRAMS</div><h2>កម្មវិធីបំប៉ន<br />និងជំនាញសិក្សា</h2></div><p>សាលាបង្រៀនថ្នាក់បំប៉នបន្ថែមក្រៅម៉ោង ដើម្បីជួយសិស្សពង្រឹងចំណេះដឹង និងជំនាញសម្រាប់អនាគត។</p></div>
+          <div className="program-grid">
+            <article><span>01</span><h3>ថ្នាក់មត្តេយ្យ</h3><p>ថ្នាក់មត្តេយ្យត្រៀមចូលថ្នាក់ទី ១ ដោយផ្តោតលើមូលដ្ឋានចាំបាច់សម្រាប់កុមារ។</p></article>
+            <article><span>02</span><h3>ថ្នាក់ទី ១ ដល់ ១២</h3><p>ថ្នាក់បំប៉នសម្រាប់សិស្សគ្រប់កម្រិត ដើម្បីពង្រឹងការសិក្សា និងត្រៀមប្រឡង។</p></article>
+            <article><span>03</span><h3>ភាសាបរទេស</h3><p>កម្មវិធីភាសាអង់គ្លេស ចិន និងភាសាបរទេសផ្សេងៗ សម្រាប់ការទំនាក់ទំនងទំនើប។</p></article>
+            <article><span>04</span><h3>កុំព្យូទ័ររដ្ឋបាល</h3><p>បណ្តុះជំនាញកុំព្យូទ័រអនុវត្តជាក់ស្តែង ដែលមានប្រយោជន៍សម្រាប់ការសិក្សា និងការងារ។</p></article>
+          </div>
+          <div className="computer-program"><div className="computer-program-intro"><div className="computer-icon">💻</div><div><div className="section-kicker">COMPUTER ADMINISTRATION</div><h3>ត្រៀមជំនាញកុំព្យូទ័រ<br />សម្រាប់សាកលវិទ្យាល័យ និងការងារ</h3><p>សិក្សាត្រឹមតែរយៈពេល ៣ ខែ ដើម្បីប្រើប្រាស់កុំព្យូទ័របានស្ទាត់ជំនាញ និងអនុវត្តបានក្នុងជីវិតប្រចាំថ្ងៃ។</p><Link href="#enroll" className="text-link">ចុះឈ្មោះរៀនកុំព្យូទ័រ →</Link></div></div><div className="computer-skills"><div><b>⌨</b><span>Typing</span><small>វាយអក្សរខ្មែរ និងអង់គ្លេសបានស្ទាត់</small></div><div><b>W</b><span>Microsoft Word</span><small>ឯកសារ លិខិតរដ្ឋបាល តារាង និងការបោះពុម្ព</small></div><div><b>X</b><span>Microsoft Excel</span><small>Sheet, Formula, Table និងលំហាត់ការងារជាក់ស្តែង</small></div><div><b>P</b><span>PowerPoint</span><small>Slide, Design, Animation, SmartArt និង Chart</small></div></div></div>
+          <div className="programs-note"><div><b>គ្រូបង្រៀនមានគរុកោសល្យ និងបទពិសោធន៍</b><span>យកចិត្តទុកដាក់ចំពោះសិស្សគ្រប់រូប ដើម្បីឲ្យការសិក្សារីកចម្រើនប្រកបដោយទំនុកចិត្ត។</span></div><Link href="#enroll" className="btn btn-navy">ចុះឈ្មោះចូលរៀន →</Link></div>
+        </div>
+      </section>
+
       <section className="section soft-section">
         <div className="wrap">
           <SectionHeading kicker="SCHOOL LIFE" title="សកម្មភាពថ្មីៗ" href="/gallery" />
