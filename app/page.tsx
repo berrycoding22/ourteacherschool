@@ -18,15 +18,18 @@ const locations = [
   { text: "ផ្ទះលេខ 241 និងផ្ទះលេខ 355 ផ្លូវលេខ 11 ក្នុងបុរីពិភពថ្មីចម្ការដូង", href: "https://maps.app.goo.gl/5RYnJe8KpaPzhQCFA" },
 ];
 type ActivityAlbum = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; activity_photos?: { count: number }[] };
+type News = { id: number; title_km: string; content_km: string | null; cover_url: string | null; created_at: string };
 
 export default async function Home() {
   const supabase = await createClient();
-  const [videosResult, activitiesResult] = await Promise.all([
+  const [videosResult, activitiesResult, newsResult] = await Promise.all([
     supabase.from("videos").select("id,title_km,youtube_id,description_km").eq("published", true).order("created_at", { ascending: false }).limit(3),
     supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,activity_photos(count)").eq("published", true).order("activity_date", { ascending: false }).limit(3),
+    supabase.from("news").select("id,title_km,content_km,cover_url,created_at").eq("published", true).order("created_at", { ascending: false }).limit(1),
   ]);
   const featuredVideos = ((videosResult.data?.length ? videosResult.data : defaultVideos.slice(0, 3)) as Video[]);
   const featuredActivities = (activitiesResult.data ?? []) as ActivityAlbum[];
+  const latestNews = (newsResult.data?.[0] ?? null) as News | null;
 
   return (
     <main>
@@ -116,10 +119,7 @@ export default async function Home() {
             <Link href="/news" className="btn btn-navy">មើលព័ត៌មានទាំងអស់</Link>
           </div>
           <div className="news-placeholder">
-            <div className="news-date">LATEST</div>
-            <h3>ព័ត៌មានថ្មីៗពី Our Teacher School</h3>
-            <p>កន្លែងសម្រាប់បង្ហាញព័ត៌មាន សកម្មភាព និងសេចក្តីជូនដំណឹងសំខាន់ៗ។</p>
-            <Link href="/news" className="text-link">មើលព័ត៌មាន →</Link>
+            {latestNews ? <><div className="news-date">{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(latestNews.created_at))}</div>{latestNews.cover_url && <img className="home-news-image" src={latestNews.cover_url} alt={latestNews.title_km} />}<h3>{latestNews.title_km}</h3>{latestNews.content_km && <p>{latestNews.content_km}</p>}<Link href="/news" className="text-link">មើលព័ត៌មាន →</Link></> : <><div className="news-date">LATEST</div><h3>ព័ត៌មានថ្មីៗពី Our Teacher School</h3><p>កន្លែងសម្រាប់បង្ហាញព័ត៌មាន សកម្មភាព និងសេចក្តីជូនដំណឹងសំខាន់ៗ។</p><Link href="/news" className="text-link">មើលព័ត៌មាន →</Link></>}
           </div>
         </div>
       </section>
