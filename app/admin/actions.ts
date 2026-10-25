@@ -53,9 +53,9 @@ async function refreshContent() {
   }
 }
 
-async function imageValue(formData: FormData, urlField: string, folder: string) {
+async function imageValue(formData: FormData, urlField: string, folder: string, fileField = "image_file") {
   const existingUrl = nullableValue(formData, urlField);
-  const file = formData.get("image_file");
+  const file = formData.get(fileField);
   if (!(file instanceof File) || file.size === 0) return existingUrl;
 
   if (!file.type.startsWith("image/") || file.size > 5 * 1024 * 1024) {
@@ -227,6 +227,21 @@ export async function deleteActivityPhoto(formData: FormData) {
   const supabase = await requireAdmin();
   const { error } = await supabase.from("activity_photos").delete().eq("id", photoId);
   if (error) redirect(adminPath(formData, "delete-error"));
+  await refreshContent();
+  redirect(adminPath(formData, "saved"));
+}
+
+export async function updateActivityPhoto(formData: FormData) {
+  const rawPhotoId = value(formData, "activity_photo_id");
+  const photoId = Number(rawPhotoId);
+  if (!Number.isSafeInteger(photoId) || photoId < 1) redirect(adminPath(formData, "save-error"));
+
+  const imageUrl = await imageValue(formData, "activity_photo_url", "activities", "activity_photo_file");
+  if (!imageUrl) redirect(adminPath(formData, "missing-required"));
+
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("activity_photos").update({ image_url: imageUrl }).eq("id", photoId);
+  if (error) redirect(adminPath(formData, "save-error"));
   await refreshContent();
   redirect(adminPath(formData, "saved"));
 }

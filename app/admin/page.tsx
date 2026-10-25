@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 import RecordEditor from "./RecordEditor";
 import AdminMobileMenu from "./AdminMobileMenu";
+import ActivityPhotoManager from "./ActivityPhotoManager";
 import ImagePicker from "./ImagePicker";
 import {
   deleteActivity,
@@ -12,6 +13,7 @@ import {
   deleteTeacher,
   deleteVideo,
   saveActivity,
+  updateActivityPhoto,
   updateInquiryStatus,
   saveNews,
   saveTeacher,
@@ -243,7 +245,7 @@ function ActivityForm({ item, section }: { item?: ActivityRow; section: AdminSec
     <ImageFields label="រូបភាព Cover" name="cover_url" value={item?.cover_url} />
     <label className="admin-field">ជំនួសរូបភាពក្នុងអាល់ប៊ុម<input name="activity_images" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple /></label>
     <TextArea label="ការពិពណ៌នាសកម្មភាព" name="description_km" value={item?.description_km} />
-    {!!item?.activity_photos?.length && <div className="activity-photo-manager"><b>រូបភាពក្នុងអាល់ប៊ុម</b><div>{item.activity_photos.sort((a, b) => a.sort_order - b.sort_order).map((photo) => <figure key={photo.id}><img src={photo.image_url} alt="រូបភាពសកម្មភាព" /><button type="submit" formAction={deleteActivityPhoto} formNoValidate name="photo_id" value={photo.id}>លុប</button></figure>)}</div></div>}
+    {!!item?.activity_photos?.length && <ActivityPhotoManager photos={item.activity_photos} updateAction={updateActivityPhoto} deleteAction={deleteActivityPhoto} />}
     <Published checked={item?.published ?? true} />
     <FormButtons editing={Boolean(item)} deleteAction={item ? deleteActivity : undefined} id={item?.id} />
   </form>;
