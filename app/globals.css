@@ -1364,6 +1364,13 @@ a {
 }
 
 @media(max-width:700px) {
+    /* Keep page headings visible while reading on phones.  The desktop header
+       remains sticky, but a sticky mobile header could cover the page hero
+       after a visitor follows a navigation link or scrolls back upward. */
+    .site-header {
+        position: relative;
+    }
+
     .wrap { width: min(100% - 32px, 1180px); }
 
     .content-prose { font-size: 16px; line-height: 1.9; }
