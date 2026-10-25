@@ -1566,16 +1566,16 @@ a {
 .record-editor small { margin-top: 3px; color: #7a879d; font-family: Arial, sans-serif; font-size: 11px; }
 .record-editor button { min-height: 36px; padding: 0 13px; border: 1px solid #cbd8f4; border-radius: 8px; background: #f7f9ff; color: #315cb1; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
 .record-editor button:hover { border-color: #7897d8; background: #eef3ff; }
-.record-dialog { width: min(960px, calc(100% - 36px)); max-height: min(820px, calc(100% - 36px)); padding: 0; overflow: hidden; border: 0; border-radius: 20px; background: transparent; box-shadow: 0 30px 80px #10193666; }
+.record-dialog { width: min(960px, calc(100% - 36px)); height: min(820px, calc(100% - 36px)); max-height: min(820px, calc(100% - 36px)); padding: 0; overflow: hidden; border: 0; border-radius: 20px; background: transparent; box-shadow: 0 30px 80px #10193666; }
 .record-dialog::backdrop { background: #10183e88; backdrop-filter: blur(4px); }
-.record-dialog-panel { display: flex; max-height: inherit; flex-direction: column; background: #fff; }
+.record-dialog-panel { display: flex; height: 100%; max-height: inherit; min-height: 0; flex-direction: column; background: #fff; }
 .record-dialog header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 25px 30px 20px; border-bottom: 1px solid #e5eaf2; background: linear-gradient(135deg, #f8faff, #fff); }
 .record-dialog header small { color: #6979b5; font-family: Arial, sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
 .record-dialog header h2 { margin: 5px 0 0; color: #1d2b59; font-size: 23px; line-height: 1.25; }
 .record-dialog header p { margin: 3px 0 0; color: #71809b; font-size: 12px; }
 .record-dialog header button { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border: 0; border-radius: 9px; background: #edf1fa; color: #52627f; font-size: 24px; line-height: 1; cursor: pointer; }
 .record-dialog header button:hover { background: #e2e9fa; color: #263b70; }
-.record-dialog-content { overflow: auto; padding: 0 30px; }
+.record-dialog-content { min-height: 0; flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; padding: 0 30px; }
 .record-form { padding: 24px 0 28px; border: 0; }
 
 @media(min-width:901px) {
@@ -1628,7 +1628,7 @@ a {
     .panel { padding: 20px 16px; }
     .new-form { padding: 16px; }
     .content-form { padding: 0; }
-    .record-dialog { width: calc(100% - 20px); max-height: calc(100% - 20px); border-radius: 15px; }
+    .record-dialog { width: calc(100% - 20px); height: calc(100% - 20px); max-height: calc(100% - 20px); border-radius: 15px; }
     .record-dialog header { padding: 20px 18px 16px; }
     .record-dialog-content { padding: 0 18px; }
 }
