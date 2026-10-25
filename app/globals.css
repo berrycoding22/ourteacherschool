@@ -1059,7 +1059,7 @@ a {
 .inquiry-details b { color: #24345e; }
 .inquiry-details p { margin: 4px 0 0; white-space: pre-line; }
 .admin-image-preview { grid-column: 1 / -1; display: flex; align-items: center; gap: 13px; min-height: 78px; padding: 10px; border: 1px dashed #b7c8e8; border-radius: 11px; background: #f5f8ff; }
-.admin-image-preview img { width: 96px; height: 58px; border-radius: 7px; object-fit: cover; }
+.admin-image-preview img { width: 120px; height: 72px; border-radius: 7px; background: #fff; object-fit: contain; }
 .admin-image-preview span { color: #60708f; font-size: 12px; font-weight: 700; }
 .activity-photo-manager { grid-column: 1 / -1; padding: 14px; border: 1px solid #dce5f2; border-radius: 11px; background: #f7f9fd; }
 .activity-photo-manager > b { display: block; margin-bottom: 10px; color: #465570; font-size: 13px; }
@@ -1689,7 +1689,7 @@ a {
     .record-editor button { display: grid; min-width: 74px; min-height: 38px; place-items: center; padding: 0 8px; font-size: 12px; }
     .record-dialog header h2 { display: -webkit-box; overflow: hidden; font-size: 20px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     .record-dialog-content { overscroll-behavior: contain; }
-    .admin-image-preview img { width: 82px; height: 54px; }
+    .admin-image-preview img { width: 96px; height: 62px; }
     .activity-photo-manager { padding: 12px; }
     .activity-photo-manager > div { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 }
