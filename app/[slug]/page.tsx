@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 import { defaultVideos, type Video } from "../../lib/videos";
+import NewsImagePreview from "../NewsImagePreview";
 
 const pageMeta = {
   about: ["ABOUT OUR SCHOOL", "អំពី Our Teacher School"],
@@ -104,4 +105,4 @@ function Gallery({ albums, legacyItems }: { albums: ActivityAlbum[]; legacyItems
   return <Empty>មិនទាន់មានសកម្មភាពទេ។ សូមបន្ថែមអាល់ប៊ុមសកម្មភាពនៅក្នុង Admin Dashboard។</Empty>;
 }
 function Videos({ items }: { items: Video[] }) { const videos = items.length ? items : defaultVideos; return <div className="content-video-grid">{videos.map((item) => <article className="content-video-card" key={item.id}><h2>{item.title_km}</h2><div className="video-wrapper"><iframe src={`https://www.youtube.com/embed/${item.youtube_id}`} title={item.title_km} loading="lazy" allowFullScreen /></div>{item.description_km && <p>{item.description_km}</p>}</article>)}</div>; }
-function NewsList({ items }: { items: News[] }) { if (!items.length) return <Empty>មិនទាន់មានព័ត៌មានថ្មីទេ។ សូមពិនិត្យម្តងទៀតនៅពេលក្រោយ។</Empty>; return <div className="news-list">{items.map((item) => <article className="news-item" key={item.id}>{item.cover_url && <img src={item.cover_url} alt={item.title_km} />}<div><time>{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(item.created_at))}</time><h2>{item.title_km}</h2>{item.content_km && <p>{item.content_km}</p>}</div></article>)}</div>; }
+function NewsList({ items }: { items: News[] }) { if (!items.length) return <Empty>មិនទាន់មានព័ត៌មានថ្មីទេ។ សូមពិនិត្យម្តងទៀតនៅពេលក្រោយ។</Empty>; return <div className="news-list">{items.map((item) => <article className="news-item" key={item.id}>{item.cover_url && <img src={item.cover_url} alt={item.title_km} />}<div><time>{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(item.created_at))}</time><h2>{item.title_km}</h2>{item.content_km && <p>{item.content_km}</p>}{item.cover_url && <NewsImagePreview src={item.cover_url} alt={item.title_km} />}</div></article>)}</div>; }
