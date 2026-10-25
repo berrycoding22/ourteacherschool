@@ -69,6 +69,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         <aside className="admin-sidebar">
           <Link href="/" className="admin-brand"><img src="/logo.png" alt="Our Teacher School" /><span><b>Our Teacher</b><small>ADMIN CONSOLE</small></span></Link>
           <div className="admin-sidebar-label">CONTENT MANAGEMENT</div>
+          <nav className="admin-side-nav admin-desktop-nav" aria-label="Content sections">
+            <Link href="/admin" className={activeSection === "overview" ? "active" : ""}><i>⌘</i> ទិដ្ឋភាពទូទៅ</Link>
+            <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{news.length}</span></Link>
+            <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></Link>
+            <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activities.length}</span></Link>
+            <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
+            <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
+          </nav>
           <details className="admin-mobile-nav">
             <summary aria-label="បើកម៉ឺនុយគ្រប់គ្រង">☰</summary>
             <nav className="admin-side-nav" aria-label="Content sections">

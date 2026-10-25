@@ -1624,12 +1624,18 @@ a {
 }
 
 /* Admin navigation: full sidebar on desktop; compact popover menu on small screens. */
+.admin-desktop-nav { display: grid; }
 .admin-mobile-nav { display: block; }
 .admin-mobile-nav summary { display: none; }
+
+@media(min-width:901px) {
+    .admin-mobile-nav { display: none; }
+}
 
 @media(max-width:900px) {
     .admin-sidebar { position: sticky; display: flex; align-items: center; width: 100%; min-height: 74px; padding: 12px 20px; }
     .admin-brand { flex: 1; }
+    .admin-desktop-nav { display: none; }
     .admin-mobile-nav { position: relative; order: 2; flex: 0 0 auto; margin-left: 8px; }
     .admin-mobile-nav summary { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid #ffffff2b; border-radius: 10px; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; list-style: none; }
     .admin-mobile-nav summary::-webkit-details-marker { display: none; }
