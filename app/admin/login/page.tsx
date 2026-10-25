@@ -18,7 +18,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
     <div className="login-glow login-glow-one" /><div className="login-glow login-glow-two" />
     <section className="login-card" aria-labelledby="login-title">
       <header className="login-card-header"><div className="login-logo-wrap"><img src="/logo.png" alt="Our Teacher School" /></div><div><span>OUR TEACHER SCHOOL</span><b>ADMIN CONSOLE</b></div></header>
-      <div className="login-copy"><div className="login-kicker"><i /> SECURE ACCESS</div><h1 id="login-title">សូមស្វាគមន៍<br /><em>អ្នកគ្រប់គ្រង</em></h1><p>ចូលគណនីរបស់អ្នក ដើម្បីគ្រប់គ្រងព័ត៌មាន និងមាតិកានៅលើ website។</p></div>
+      <div className="login-copy"><div className="login-kicker"><i /> SECURE ACCESS</div><h1 id="login-title">សូមស្វាគមន៍ <em>អ្នកគ្រប់គ្រង</em></h1><p>ចូលគណនីរបស់អ្នក ដើម្បីគ្រប់គ្រងព័ត៌មាន និងមាតិកានៅលើ website។</p></div>
       <form action={login} className="login-form">
         <label><span>Email address</span><input name="email" type="email" placeholder="name@example.com" autoComplete="email" required /></label>
         <label><span>Password</span><input name="password" type="password" placeholder="បញ្ចូលពាក្យសម្ងាត់" autoComplete="current-password" required /></label>

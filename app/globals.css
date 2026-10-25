@@ -861,17 +861,17 @@ a {
 .login-glow { position: absolute; width: 430px; height: 430px; border-radius: 50%; filter: blur(4px); opacity: .65; }
 .login-glow-one { top: -170px; left: -110px; background: #6d8ce7; }
 .login-glow-two { right: -160px; bottom: -190px; background: #d5af54; opacity: .26; }
-.login-card { position: relative; width: min(100%, 520px); padding: 34px; border: 1px solid #ffffff5c; border-radius: 26px; background: #fffffffa; box-shadow: 0 28px 80px #050b2766; }
-.login-card-header { display: flex; align-items: center; gap: 12px; padding-bottom: 25px; border-bottom: 1px solid #e7ebf3; }
-.login-logo-wrap { display: grid; width: 55px; height: 55px; place-items: center; border: 1px solid #dfe5f1; border-radius: 15px; background: #f8faff; }
-.login-logo-wrap img { width: 43px; height: 43px; object-fit: contain; }
+.login-card { position: relative; width: min(100%, 560px); padding: 38px; border: 1px solid #ffffff5c; border-radius: 26px; background: #fffffffa; box-shadow: 0 28px 80px #050b2766; }
+.login-card-header { display: flex; align-items: center; gap: 15px; padding-bottom: 30px; border-bottom: 1px solid #e7ebf3; }
+.login-logo-wrap { display: grid; width: 66px; height: 66px; place-items: center; border: 1px solid #dfe5f1; border-radius: 18px; background: #f8faff; }
+.login-logo-wrap img { width: 52px; height: 52px; object-fit: contain; }
 .login-card-header span, .login-card-header b { display: block; font-family: Arial, sans-serif; }
 .login-card-header span { color: #65749a; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
-.login-card-header b { margin-top: 4px; color: #1b2a59; font-size: 14px; letter-spacing: .3px; }
-.login-copy { padding: 30px 0 20px; }
+.login-card-header b { margin-top: 5px; color: #1b2a59; font-size: 15px; letter-spacing: .3px; }
+.login-copy { padding: 34px 0 22px; }
 .login-kicker { display: flex; align-items: center; gap: 8px; color: #7b88a2; font-family: Arial, sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; }
 .login-kicker i { width: 25px; height: 2px; background: var(--gold); }
-.login-copy h1 { margin: 12px 0 10px; color: #1b2a59; font-size: clamp(31px, 5vw, 42px); line-height: 1.2; }
+.login-copy h1 { margin: 12px 0 10px; color: #1b2a59; font-size: clamp(27px, 4.7vw, 42px); line-height: 1.2; white-space: nowrap; }
 .login-copy h1 em { color: #2a67bd; font-style: normal; }
 .login-copy p { max-width: 380px; margin: 0; color: #71809b; line-height: 1.75; }
 .login-form { display: grid; gap: 15px; }
@@ -1380,6 +1380,7 @@ a {
     .login-page { padding: 18px 14px; }
     .login-card { padding: 24px 20px; border-radius: 20px; }
     .login-copy { padding: 24px 0 18px; }
+    .login-copy h1 { font-size: clamp(22px, 6.2vw, 27px); }
     .login-footer { align-items: flex-start; flex-direction: column; }
     .login-footer small { max-width: none; text-align: left; }
 
