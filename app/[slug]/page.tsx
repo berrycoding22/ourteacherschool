@@ -60,10 +60,10 @@ export default async function SitePage({ params }: { params: Promise<{ slug: str
     <header className="site-header">
       <div className="wrap nav-row">
         <Link href="/" className="brand" aria-label="Our Teacher School home"><img src="/logo.png" alt="Our Teacher School logo" /><span><strong>Our Teacher School</strong><small>BUILD YOUR LIFE</small></span></Link>
-        <nav className="desktop-nav" aria-label="Main navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<Link href="/admin" className="admin-link">Admin</Link></nav>
+        <nav className="desktop-nav" aria-label="Main navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav>
         <details className="mobile-nav">
           <summary aria-label="បើកម៉ឺនុយ">☰</summary>
-          <nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}<Link href="/admin" className="admin-link">Admin</Link></nav>
+          <nav className="mobile-menu" aria-label="Mobile navigation">{navigation.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav>
         </details>
       </div>
     </header>

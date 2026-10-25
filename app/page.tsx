@@ -41,13 +41,11 @@ export default async function Home() {
           </Link>
           <nav className="desktop-nav" aria-label="Main navigation">
             {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
-            <Link href="/admin" className="admin-link">Admin</Link>
           </nav>
           <details className="mobile-nav">
             <summary aria-label="បើកម៉ឺនុយ">☰</summary>
             <nav className="mobile-menu" aria-label="Mobile navigation">
               {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
-              <Link href="/admin" className="admin-link">Admin</Link>
             </nav>
           </details>
         </div>
@@ -115,7 +113,7 @@ export default async function Home() {
           <div>
             <div className="section-kicker">LATEST NEWS</div>
             <h2>ព័ត៌មាន និង<br />សេចក្តីជូនដំណឹង</h2>
-            <p>ព័ត៌មានថ្មីៗរបស់សាលានឹងបង្ហាញនៅទីនេះ។ នៅពេល Admin បញ្ចូលព័ត៌មានថ្មី វានឹងបង្ហាញលើ Homepage ដោយស្វ័យប្រវត្តិ។</p>
+            <p>ព័ត៌មានថ្មីៗរបស់សាលានឹងបង្ហាញនៅទីនេះ។</p>
             <Link href="/news" className="btn btn-navy">មើលព័ត៌មានទាំងអស់</Link>
           </div>
           <div className="news-placeholder">
