@@ -86,6 +86,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activities.length}</span></Link>
               <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
               <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
+              <div className="admin-mobile-menu-actions"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
             </nav>
           </details>
           <div className="admin-sidebar-footer"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
