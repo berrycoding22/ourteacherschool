@@ -25,6 +25,7 @@ const navigation = [
 type PageSlug = keyof typeof pageMeta;
 type Teacher = { id: number; name_km: string; name_en: string | null; subject_km: string | null; subject_en: string | null; bio_km: string | null; photo_url: string | null };
 type GalleryItem = { id: number; title_km: string | null; image_url: string; category: string | null };
+type ActivityAlbum = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; activity_photos?: { count: number }[] };
 type News = { id: number; title_km: string; content_km: string | null; cover_url: string | null; created_at: string };
 
 
@@ -42,8 +43,11 @@ export default async function SitePage({ params }: { params: Promise<{ slug: str
     const { data } = await supabase.from("teachers").select("id,name_km,name_en,subject_km,subject_en,bio_km,photo_url").order("created_at", { ascending: false });
     content = <Teachers items={(data ?? []) as Teacher[]} />;
   } else if (pageSlug === "gallery") {
-    const { data } = await supabase.from("gallery").select("id,title_km,image_url,category").eq("published", true).order("created_at", { ascending: false });
-    content = <Gallery items={(data ?? []) as GalleryItem[]} />;
+    const [albumsResult, galleryResult] = await Promise.all([
+      supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,activity_photos(count)").eq("published", true).order("activity_date", { ascending: false }),
+      supabase.from("gallery").select("id,title_km,image_url,category").eq("published", true).order("created_at", { ascending: false }),
+    ]);
+    content = <Gallery albums={(albumsResult.data ?? []) as ActivityAlbum[]} legacyItems={(galleryResult.data ?? []) as GalleryItem[]} />;
   } else if (pageSlug === "videos") {
     const { data } = await supabase.from("videos").select("id,title_km,youtube_id,description_km").eq("published", true).order("created_at", { ascending: false });
     content = <Videos items={(data ?? []) as Video[]} />;
@@ -91,6 +95,13 @@ function Teachers({ items }: { items: Teacher[] }) {
     </article>
   ))}</div>;
 }
-function Gallery({ items }: { items: GalleryItem[] }) { if (!items.length) return <Empty>មិនទាន់មានរូបភាពសកម្មភាពទេ។ សូមបន្ថែមរូបភាពនៅក្នុង Admin Dashboard។</Empty>; return <div className="gallery-grid">{items.map((item) => <figure key={item.id}><img src={item.image_url} alt={item.title_km || "School activity"} /><figcaption>{item.title_km || item.category || "សកម្មភាពសាលា"}</figcaption></figure>)}</div>; }
+function Gallery({ albums, legacyItems }: { albums: ActivityAlbum[]; legacyItems: GalleryItem[] }) {
+  if (albums.length) return <div className="activity-album-grid">{albums.map((album) => <article className="activity-album-card" key={album.id}>
+    <Link href={`/activities/${album.id}`} className="activity-album-image"><img src={album.cover_url} alt={album.title_km} /><span>📷 {album.activity_photos?.[0]?.count ?? 0} រូបភាព</span></Link>
+    <div className="activity-album-body"><time>{album.activity_date ? new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(`${album.activity_date}T00:00:00`)) : "សកម្មភាពសាលា"}</time><h2>{album.title_km}</h2>{album.description_km && <p>{album.description_km}</p>}<Link href={`/activities/${album.id}`} className="text-link">មើលសកម្មភាព →</Link></div>
+  </article>)}</div>;
+  if (legacyItems.length) return <div className="gallery-grid">{legacyItems.map((item) => <figure key={item.id}><img src={item.image_url} alt={item.title_km || "School activity"} /><figcaption>{item.title_km || item.category || "សកម្មភាពសាលា"}</figcaption></figure>)}</div>;
+  return <Empty>មិនទាន់មានសកម្មភាពទេ។ សូមបន្ថែមអាល់ប៊ុមសកម្មភាពនៅក្នុង Admin Dashboard។</Empty>;
+}
 function Videos({ items }: { items: Video[] }) { const videos = items.length ? items : defaultVideos; return <div className="content-video-grid">{videos.map((item) => <article className="content-video-card" key={item.id}><h2>{item.title_km}</h2><div className="video-wrapper"><iframe src={`https://www.youtube.com/embed/${item.youtube_id}`} title={item.title_km} loading="lazy" allowFullScreen /></div>{item.description_km && <p>{item.description_km}</p>}</article>)}</div>; }
 function NewsList({ items }: { items: News[] }) { if (!items.length) return <Empty>មិនទាន់មានព័ត៌មានថ្មីទេ។ សូមពិនិត្យម្តងទៀតនៅពេលក្រោយ។</Empty>; return <div className="news-list">{items.map((item) => <article className="news-item" key={item.id}>{item.cover_url && <img src={item.cover_url} alt={item.title_km} />}<div><time>{new Intl.DateTimeFormat("km-KH", { dateStyle: "long" }).format(new Date(item.created_at))}</time><h2>{item.title_km}</h2>{item.content_km && <p>{item.content_km}</p>}</div></article>)}</div>; }

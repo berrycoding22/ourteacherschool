@@ -17,16 +17,16 @@ const locations = [
   { text: "ផ្ទះលេខ 15 និង 16បេ ខាងក្រោយសាលាប៊ែលធី ច្រមុះជ្រូកស្ទឹងមានជ័យ (ចម្ងាយ 200m)", href: "https://maps.app.goo.gl/Roy3xcjboCw7keM57" },
   { text: "ផ្ទះលេខ 241 និងផ្ទះលេខ 355 ផ្លូវលេខ 11 ក្នុងបុរីពិភពថ្មីចម្ការដូង", href: "https://maps.app.goo.gl/5RYnJe8KpaPzhQCFA" },
 ];
+type ActivityAlbum = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; activity_photos?: { count: number }[] };
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("videos")
-    .select("id,title_km,youtube_id,description_km")
-    .eq("published", true)
-    .order("created_at", { ascending: false })
-    .limit(3);
-  const featuredVideos = ((data?.length ? data : defaultVideos.slice(0, 3)) as Video[]);
+  const [videosResult, activitiesResult] = await Promise.all([
+    supabase.from("videos").select("id,title_km,youtube_id,description_km").eq("published", true).order("created_at", { ascending: false }).limit(3),
+    supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,activity_photos(count)").eq("published", true).order("activity_date", { ascending: false }).limit(3),
+  ]);
+  const featuredVideos = ((videosResult.data?.length ? videosResult.data : defaultVideos.slice(0, 3)) as Video[]);
+  const featuredActivities = (activitiesResult.data ?? []) as ActivityAlbum[];
 
   return (
     <main>
@@ -94,11 +94,7 @@ export default async function Home() {
       <section className="section soft-section">
         <div className="wrap">
           <SectionHeading kicker="SCHOOL LIFE" title="សកម្មភាពថ្មីៗ" href="/gallery" />
-          <div className="feature-grid">
-            <Activity icon="📚" title="ការរៀន និងការអនុវត្ត" text="ចែករំលែកបរិយាកាសរៀន និងសកម្មភាពអប់រំប្រចាំថ្ងៃរបស់សិស្ស។" />
-            <Activity icon="🎓" title="សកម្មភាពសិស្ស" text="សកម្មភាពដែលជួយបង្កើនជំនាញ ការច្នៃប្រឌិត និងទំនុកចិត្ត។" />
-            <Activity icon="🏆" title="ព្រឹត្តិការណ៍សាលា" text="ព្រឹត្តិការណ៍ និងសមិទ្ធផលសំខាន់ៗរបស់សាលា និងសិស្ស។" />
-          </div>
+          <div className="feature-grid">{featuredActivities.length ? featuredActivities.map((activity) => <Activity key={activity.id} activity={activity} />) : <><Activity icon="📚" title="ការរៀន និងការអនុវត្ត" text="ចែករំលែកបរិយាកាសរៀន និងសកម្មភាពអប់រំប្រចាំថ្ងៃរបស់សិស្ស។" /><Activity icon="🎓" title="សកម្មភាពសិស្ស" text="សកម្មភាពដែលជួយបង្កើនជំនាញ ការច្នៃប្រឌិត និងទំនុកចិត្ត។" /><Activity icon="🏆" title="ព្រឹត្តិការណ៍សាលា" text="ព្រឹត្តិការណ៍ និងសមិទ្ធផលសំខាន់ៗរបស់សាលា និងសិស្ស។" /></>}</div>
         </div>
       </section>
 
@@ -159,5 +155,8 @@ function Stat({ number, label }: { number: string; label: string }) { return <di
 function SectionHeading({ kicker, title, href, external }: { kicker: string; title: string; href: string; external?: boolean }) {
   return <div className="section-heading"><div><div className="section-kicker">{kicker}</div><h2>{title}</h2></div>{external ? <a href={href} target="_blank" rel="noreferrer" className="text-link">YouTube ↗</a> : <Link href={href} className="text-link">មើលទាំងអស់ →</Link>}</div>;
 }
-function Activity({ icon, title, text }: { icon: string; title: string; text: string }) { return <article className="activity-card"><div className="activity-image">{icon}</div><div className="activity-body"><h3>{title}</h3><p>{text}</p><Link href="/gallery" className="text-link">មើលសកម្មភាព →</Link></div></article>; }
+function Activity({ icon, title, text, activity }: { icon?: string; title?: string; text?: string; activity?: ActivityAlbum }) {
+  const href = activity ? `/activities/${activity.id}` : "/gallery";
+  return <article className="activity-card">{activity ? <Link href={href} className="activity-image activity-cover"><img src={activity.cover_url} alt={activity.title_km} /><span>📷 {activity.activity_photos?.[0]?.count ?? 0}</span></Link> : <div className="activity-image">{icon}</div>}<div className="activity-body"><h3>{activity?.title_km || title}</h3><p>{activity?.description_km || text}</p><Link href={href} className="text-link">មើលសកម្មភាព →</Link></div></article>;
+}
 

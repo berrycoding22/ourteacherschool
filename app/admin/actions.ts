@@ -26,7 +26,7 @@ function rowId(formData: FormData) {
 
 function adminPath(formData: FormData, status: string) {
   const section = value(formData, "section");
-  const allowedSections = ["news", "teachers", "gallery", "videos"];
+  const allowedSections = ["news", "teachers", "gallery", "activities", "videos"];
   const params = new URLSearchParams({ status });
   if (allowedSections.includes(section)) params.set("section", section);
   return `/admin?${params.toString()}`;
@@ -48,7 +48,7 @@ async function requireAdmin() {
 }
 
 async function refreshContent() {
-  for (const path of ["/admin", "/", "/news", "/teachers", "/gallery", "/videos"]) {
+  for (const path of ["/admin", "/", "/news", "/teachers", "/gallery", "/activities", "/videos"]) {
     revalidatePath(path);
   }
 }
@@ -150,6 +150,62 @@ export async function saveGalleryItem(formData: FormData) {
 
 export async function deleteGalleryItem(formData: FormData) {
   await deleteRow("gallery", formData);
+}
+
+async function uploadActivityPhotos(formData: FormData, albumId: number) {
+  const files = formData.getAll("activity_images").filter((file): file is File => file instanceof File && file.size > 0);
+  if (!files.length) return;
+
+  if (files.some((file) => !file.type.startsWith("image/") || file.size > 5 * 1024 * 1024)) {
+    redirect(adminPath(formData, "invalid-image"));
+  }
+
+  const supabase = await requireAdmin();
+  const photos = [] as { album_id: number; image_url: string; sort_order: number }[];
+  for (const [index, file] of files.entries()) {
+    const extension = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+    const path = `activities/${crypto.randomUUID()}.${extension}`;
+    const { error } = await supabase.storage.from(imageBucket).upload(path, file, { contentType: file.type, upsert: false });
+    if (error) redirect(adminPath(formData, "upload-error"));
+    photos.push({ album_id: albumId, image_url: supabase.storage.from(imageBucket).getPublicUrl(path).data.publicUrl, sort_order: index });
+  }
+
+  const { error } = await supabase.from("activity_photos").insert(photos);
+  if (error) redirect(adminPath(formData, "save-error"));
+}
+
+export async function saveActivity(formData: FormData) {
+  const title = value(formData, "title_km");
+  const coverUrl = await imageValue(formData, "cover_url", "activities");
+  if (!title || !coverUrl) redirect(adminPath(formData, "missing-required"));
+
+  const id = rowId(formData);
+  const supabase = await requireAdmin();
+  const values = {
+    title_km: title,
+    description_km: nullableValue(formData, "description_km"),
+    cover_url: coverUrl,
+    activity_date: nullableValue(formData, "activity_date"),
+    published: formData.get("published") === "on",
+  };
+  const result = id
+    ? await supabase.from("activity_albums").update(values).eq("id", id).select("id").single()
+    : await supabase.from("activity_albums").insert(values).select("id").single();
+  if (result.error || !result.data) redirect(adminPath(formData, "save-error"));
+
+  await uploadActivityPhotos(formData, result.data.id as number);
+  await refreshContent();
+  redirect(adminPath(formData, "saved"));
+}
+
+export async function deleteActivity(formData: FormData) {
+  const id = rowId(formData);
+  if (!id) redirect(adminPath(formData, "save-error"));
+  const supabase = await requireAdmin();
+  const { error } = await supabase.from("activity_albums").delete().eq("id", id);
+  if (error) redirect(adminPath(formData, "delete-error"));
+  await refreshContent();
+  redirect(adminPath(formData, "deleted"));
 }
 
 export async function saveVideo(formData: FormData) {
