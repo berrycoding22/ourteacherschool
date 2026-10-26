@@ -54,19 +54,43 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   if (grantError) return <SetupNotice userId={user.id} needsSchema />;
   if (!adminGrant) return <SetupNotice userId={user.id} />;
 
-  const [newsResult, teachersResult, activitiesResult, videosResult, inquiriesResult] = await Promise.all([
-    supabase.from("news").select("id,title_km,title_en,content_km,content_en,cover_url,published").order("created_at", { ascending: false }),
-    supabase.from("teachers").select("id,name_km,name_en,subject_km,subject_en,bio_km,photo_url").order("created_at", { ascending: false }),
-    supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,published,activity_photos(id,image_url,sort_order)").order("activity_date", { ascending: false }),
-    supabase.from("videos").select("id,title_km,title_en,youtube_id,description_km,published").order("created_at", { ascending: false }),
-    supabase.from("enrollment_inquiries").select("id,guardian_name,phone,student_name,interested_class,message,status,created_at").order("created_at", { ascending: false }),
+  // Keep the dashboard responsive: every route fetches only small counts for
+  // navigation, then loads the full records for the section being viewed.
+  const [newsCountResult, teachersCountResult, activitiesCountResult, videosCountResult, newInquiriesCountResult] = await Promise.all([
+    supabase.from("news").select("id", { count: "exact", head: true }),
+    supabase.from("teachers").select("id", { count: "exact", head: true }),
+    supabase.from("activity_albums").select("id", { count: "exact", head: true }),
+    supabase.from("videos").select("id", { count: "exact", head: true }),
+    supabase.from("enrollment_inquiries").select("id", { count: "exact", head: true }).eq("status", "new"),
   ]);
-  const loadError = [newsResult, teachersResult, activitiesResult, videosResult, inquiriesResult].some((result) => result.error);
-  const news = (newsResult.data ?? []) as NewsRow[];
-  const teachers = (teachersResult.data ?? []) as TeacherRow[];
-  const activities = (activitiesResult.data ?? []) as ActivityRow[];
-  const videos = (videosResult.data ?? []) as VideoRow[];
-  const inquiries = (inquiriesResult.data ?? []) as InquiryRow[];
+  const newsCount = newsCountResult.count ?? 0;
+  const teachersCount = teachersCountResult.count ?? 0;
+  const activitiesCount = activitiesCountResult.count ?? 0;
+  const videosCount = videosCountResult.count ?? 0;
+  const newInquiriesCount = newInquiriesCountResult.count ?? 0;
+  let news: NewsRow[] = [];
+  let teachers: TeacherRow[] = [];
+  let activities: ActivityRow[] = [];
+  let videos: VideoRow[] = [];
+  let inquiries: InquiryRow[] = [];
+  let loadError = [newsCountResult, teachersCountResult, activitiesCountResult, videosCountResult, newInquiriesCountResult].some((result) => result.error);
+
+  if (activeSection === "news") {
+    const result = await supabase.from("news").select("id,title_km,title_en,content_km,content_en,cover_url,published").order("created_at", { ascending: false });
+    news = (result.data ?? []) as NewsRow[]; loadError ||= Boolean(result.error);
+  } else if (activeSection === "teachers") {
+    const result = await supabase.from("teachers").select("id,name_km,name_en,subject_km,subject_en,bio_km,photo_url").order("created_at", { ascending: false });
+    teachers = (result.data ?? []) as TeacherRow[]; loadError ||= Boolean(result.error);
+  } else if (activeSection === "activities") {
+    const result = await supabase.from("activity_albums").select("id,title_km,description_km,cover_url,activity_date,published,activity_photos(id,image_url,sort_order)").order("activity_date", { ascending: false });
+    activities = (result.data ?? []) as ActivityRow[]; loadError ||= Boolean(result.error);
+  } else if (activeSection === "videos") {
+    const result = await supabase.from("videos").select("id,title_km,title_en,youtube_id,description_km,published").order("created_at", { ascending: false });
+    videos = (result.data ?? []) as VideoRow[]; loadError ||= Boolean(result.error);
+  } else if (activeSection === "inquiries") {
+    const result = await supabase.from("enrollment_inquiries").select("id,guardian_name,phone,student_name,interested_class,message,status,created_at").order("created_at", { ascending: false });
+    inquiries = (result.data ?? []) as InquiryRow[]; loadError ||= Boolean(result.error);
+  }
 
   return (
     <main className="adminpage">
@@ -76,20 +100,20 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <div className="admin-sidebar-label">CONTENT MANAGEMENT</div>
           <nav className="admin-side-nav admin-desktop-nav" aria-label="Content sections">
             <Link href="/admin" className={activeSection === "overview" ? "active" : ""}><i>⌘</i> ទិដ្ឋភាពទូទៅ</Link>
-            <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{news.length}</span></Link>
-            <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></Link>
-            <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activities.length}</span></Link>
-            <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
-            <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
+            <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{newsCount}</span></Link>
+            <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachersCount}</span></Link>
+            <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activitiesCount}</span></Link>
+            <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videosCount}</span></Link>
+            <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{newInquiriesCount}</span></Link>
           </nav>
           <AdminMobileMenu>
             <nav className="admin-side-nav" aria-label="Content sections">
               <Link href="/admin" className={activeSection === "overview" ? "active" : ""}><i>⌘</i> ទិដ្ឋភាពទូទៅ</Link>
-              <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{news.length}</span></Link>
-              <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachers.length}</span></Link>
-              <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activities.length}</span></Link>
-              <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videos.length}</span></Link>
-              <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{inquiries.filter((item) => item.status === "new").length}</span></Link>
+              <Link href="/admin?section=news" className={activeSection === "news" ? "active" : ""}><i>◼</i> ព័ត៌មាន <span>{newsCount}</span></Link>
+              <Link href="/admin?section=teachers" className={activeSection === "teachers" ? "active" : ""}><i>♙</i> គ្រូបង្រៀន <span>{teachersCount}</span></Link>
+              <Link href="/admin?section=activities" className={activeSection === "activities" ? "active" : ""}><i>▧</i> សកម្មភាព <span>{activitiesCount}</span></Link>
+              <Link href="/admin?section=videos" className={activeSection === "videos" ? "active" : ""}><i>▶</i> វីដេអូបង្រៀន <span>{videosCount}</span></Link>
+              <Link href="/admin?section=inquiries" className={activeSection === "inquiries" ? "active" : ""}><i>✉</i> សំណើចុះឈ្មោះ <span>{newInquiriesCount}</span></Link>
               <div className="admin-mobile-menu-actions"><Link href="/" target="_blank">↗ មើល Website</Link><form action="/api/logout" method="post"><button type="submit">⇥ Logout</button></form></div>
             </nav>
           </AdminMobileMenu>
@@ -108,11 +132,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           </section>
 
           <div className="dashboard">
-            <Stat n={news.length} t="ព័ត៌មាន" icon="◼" tone="blue" />
-            <Stat n={teachers.length} t="គ្រូបង្រៀន" icon="♙" tone="purple" />
-            <Stat n={activities.length} t="សកម្មភាព" icon="▧" tone="gold" />
-            <Stat n={videos.length} t="វីដេអូ" icon="▶" tone="teal" />
-            <Stat n={inquiries.filter((item) => item.status === "new").length} t="សំណើថ្មី" icon="✉" tone="blue" />
+            <Stat n={newsCount} t="ព័ត៌មាន" icon="◼" tone="blue" />
+            <Stat n={teachersCount} t="គ្រូបង្រៀន" icon="♙" tone="purple" />
+            <Stat n={activitiesCount} t="សកម្មភាព" icon="▧" tone="gold" />
+            <Stat n={videosCount} t="វីដេអូ" icon="▶" tone="teal" />
+            <Stat n={newInquiriesCount} t="សំណើថ្មី" icon="✉" tone="blue" />
           </div></>}
 
           {(statusText[status ?? ""] || loadError) && (
