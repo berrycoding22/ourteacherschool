@@ -4,14 +4,17 @@ import { createClient } from "../lib/supabase/server";
 import { defaultVideos, type Video } from "../lib/videos";
 import { submitEnrollmentInquiry } from "./enrollment-actions";
 import NewsImagePreview from "./NewsImagePreview";
+import MobileContactBar from "./MobileContactBar";
 
 const nav = [
   ["ទំព័រដើម", "/"],
   ["អំពីសាលា", "/about"],
+  ["កម្មវិធីសិក្សា", "/programs"],
   ["គ្រូបង្រៀន", "/teachers"],
   ["សកម្មភាព", "/gallery"],
   ["វីដេអូបង្រៀន", "/videos"],
   ["ព័ត៌មាន", "/news"],
+  ["FAQ", "/faq"],
   ["ទំនាក់ទំនង", "/contact"],
 ];
 
@@ -104,9 +107,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ i
             <article><span>04</span><h3>កុំព្យូទ័ររដ្ឋបាល</h3><p>បណ្តុះជំនាញកុំព្យូទ័រអនុវត្តជាក់ស្តែង ដែលមានប្រយោជន៍សម្រាប់ការសិក្សា និងការងារ។</p></article>
           </div>
           <div className="computer-program"><div className="computer-program-intro"><div className="computer-icon">💻</div><div><div className="section-kicker">COMPUTER ADMINISTRATION</div><h3>ត្រៀមជំនាញកុំព្យូទ័រ<br />សម្រាប់សាកលវិទ្យាល័យ និងការងារ</h3><p>សិក្សាត្រឹមតែរយៈពេល ៣ ខែ ដើម្បីប្រើប្រាស់កុំព្យូទ័របានស្ទាត់ជំនាញ និងអនុវត្តបានក្នុងជីវិតប្រចាំថ្ងៃ។</p><Link href="#enroll" className="text-link">ចុះឈ្មោះរៀនកុំព្យូទ័រ →</Link></div></div><div className="computer-skills"><div><b>⌨</b><span>Typing</span><small>វាយអក្សរខ្មែរ និងអង់គ្លេសបានស្ទាត់</small></div><div><b>W</b><span>Microsoft Word</span><small>ឯកសារ លិខិតរដ្ឋបាល តារាង និងការបោះពុម្ព</small></div><div><b>X</b><span>Microsoft Excel</span><small>Sheet, Formula, Table និងលំហាត់ការងារជាក់ស្តែង</small></div><div><b>P</b><span>PowerPoint</span><small>Slide, Design, Animation, SmartArt និង Chart</small></div></div></div>
-          <div className="programs-note"><div><b>គ្រូបង្រៀនមានគរុកោសល្យ និងបទពិសោធន៍</b><span>យកចិត្តទុកដាក់ចំពោះសិស្សគ្រប់រូប ដើម្បីឲ្យការសិក្សារីកចម្រើនប្រកបដោយទំនុកចិត្ត។</span></div><Link href="#enroll" className="btn btn-navy">ចុះឈ្មោះចូលរៀន →</Link></div>
+          <div className="programs-note"><div><b>គ្រូបង្រៀនមានគរុកោសល្យ និងបទពិសោធន៍</b><span>យកចិត្តទុកដាក់ចំពោះសិស្សគ្រប់រូប ដើម្បីឲ្យការសិក្សារីកចម្រើនប្រកបដោយទំនុកចិត្ត។</span></div><div className="programs-note-actions"><Link href="/programs" className="text-link">មើលកម្មវិធីលម្អិត →</Link><Link href="#enroll" className="btn btn-navy">ចុះឈ្មោះចូលរៀន →</Link></div></div>
         </div>
       </section>
+
+      <section className="section testimonials-section">
+        <div className="wrap"><SectionHeading kicker="OUR COMMUNITY" title="ការជឿទុកចិត្តពីមាតាបិតា និងសិស្ស" href="/faq" /><div className="testimonial-grid"><Testimonial quote="គ្រូយកចិត្តទុកដាក់ និងពន្យល់មេរៀនបានងាយយល់។ កូនខ្ញុំមានទំនុកចិត្តក្នុងការរៀនកាន់តែខ្លាំង។" name="មាតាបិតាសិស្ស" role="ថ្នាក់បំប៉ន" /><Testimonial quote="ខ្ញុំអាចប្រើ Word, Excel និង PowerPoint បានល្អ បន្ទាប់ពីរៀនថ្នាក់កុំព្យូទ័ររយៈពេល ៣ ខែ។" name="សិស្ស Our Teacher School" role="ថ្នាក់កុំព្យូទ័រ" /><Testimonial quote="បរិយាកាសសិក្សាល្អ មានវិន័យ ហើយគ្រូតែងតែជួយណែនាំសិស្សគ្រប់រូប។" name="មាតាបិតាសិស្ស" role="កម្មវិធីភាសា" /></div></div>
+      </section>
+
+      <section className="section faq-preview-section"><div className="wrap faq-preview"><div><div className="section-kicker">HELP CENTER</div><h2>សំណួរដែលគេសួរញឹកញាប់</h2><p>ស្វែងរកព័ត៌មានអំពីការចុះឈ្មោះ ថ្នាក់សិក្សា និងការទំនាក់ទំនងជាមួយសាលា។</p><Link className="btn btn-navy" href="/faq">មើល FAQ ទាំងអស់ →</Link></div><div className="faq-mini"><details open><summary>សាលាទទួលចុះឈ្មោះពេលណា?</summary><p>សាលាទទួលចុះឈ្មោះសិស្សជារៀងរាល់ថ្ងៃ។</p></details><details><summary>តើមានថ្នាក់អ្វីខ្លះ?</summary><p>មានថ្នាក់មត្តេយ្យ បំប៉នទី១–១២ ភាសាបរទេស និងកុំព្យូទ័រ។</p></details><details><summary>តើអាចសួរព័ត៌មានបន្ថែមបានទេ?</summary><p>អាចទំនាក់ទំនងតាមទូរស័ព្ទ Telegram ឬ Facebook របស់សាលា។</p></details></div></div></section>
 
       <section className="section soft-section">
         <div className="wrap">
@@ -178,6 +187,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ i
         </div>
         <div className="wrap copyright">© {new Date().getFullYear()} Our Teacher School. All rights reserved.</div>
       </footer>
+      <MobileContactBar />
     </main>
   );
 }
@@ -190,4 +200,5 @@ function Activity({ icon, title, text, activity }: { icon?: string; title?: stri
   const href = activity ? `/activities/${activity.id}` : "/gallery";
   return <article className="activity-card">{activity ? <Link href={href} className="activity-image activity-cover"><img src={activity.cover_url} alt={activity.title_km} /><span>📷 {activity.activity_photos?.[0]?.count ?? 0}</span></Link> : <div className="activity-image">{icon}</div>}<div className="activity-body"><h3>{activity?.title_km || title}</h3><p>{activity?.description_km || text}</p><Link href={href} className="text-link">មើលសកម្មភាព →</Link></div></article>;
 }
+function Testimonial({ quote, name, role }: { quote: string; name: string; role: string }) { return <figure className="testimonial-card"><blockquote>“{quote}”</blockquote><figcaption><b>{name}</b><span>{role}</span></figcaption></figure>; }
 

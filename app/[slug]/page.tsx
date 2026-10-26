@@ -3,23 +3,28 @@ import { notFound } from "next/navigation";
 import { createClient } from "../../lib/supabase/server";
 import { defaultVideos, type Video } from "../../lib/videos";
 import NewsImagePreview from "../NewsImagePreview";
+import MobileContactBar from "../MobileContactBar";
 
 const pageMeta = {
   about: ["ABOUT OUR SCHOOL", "អំពី Our Teacher School"],
+  programs: ["OUR PROGRAMS", "កម្មវិធីសិក្សា"],
   teachers: ["OUR TEACHERS", "គ្រូបង្រៀន"],
   gallery: ["SCHOOL LIFE", "សកម្មភាពសាលា"],
   videos: ["YOUTUBE LEARNING", "វីដេអូបង្រៀន"],
   news: ["LATEST NEWS", "ព័ត៌មាន និងសេចក្តីជូនដំណឹង"],
+  faq: ["HELP CENTER", "សំណួរដែលគេសួរញឹកញាប់"],
   contact: ["CONTACT US", "ទំនាក់ទំនងមកកាន់យើង"],
 } as const;
 
 const navigation = [
   ["ទំព័រដើម", "/"],
   ["អំពីសាលា", "/about"],
+  ["កម្មវិធីសិក្សា", "/programs"],
   ["គ្រូបង្រៀន", "/teachers"],
   ["សកម្មភាព", "/gallery"],
   ["វីដេអូបង្រៀន", "/videos"],
   ["ព័ត៌មាន", "/news"],
+  ["FAQ", "/faq"],
   ["ទំនាក់ទំនង", "/contact"],
 ];
 
@@ -39,6 +44,8 @@ export default async function SitePage({ params }: { params: Promise<{ slug: str
   let content: React.ReactNode;
 
   if (pageSlug === "about") content = <About />;
+  else if (pageSlug === "programs") content = <Programs />;
+  else if (pageSlug === "faq") content = <Faq />;
   else if (pageSlug === "contact") content = <Contact />;
   else if (pageSlug === "teachers") {
     const { data } = await supabase.from("teachers").select("id,name_km,name_en,subject_km,subject_en,bio_km,photo_url").order("created_at", { ascending: false });
@@ -70,10 +77,13 @@ export default async function SitePage({ params }: { params: Promise<{ slug: str
     </header>
     <main className="content-page"><header className="content-hero"><div className="wrap"><div className="section-kicker">{eyebrow}</div><h1>{title}</h1><Link href="/" className="text-link">← ទំព័រដើម</Link></div></header><section className="content-body wrap">{content}</section></main>
     <footer className="footer"><div className="wrap copyright">© {new Date().getFullYear()} Our Teacher School. All rights reserved.</div></footer>
+    <MobileContactBar />
   </>;
 }
 
 function About() { return <div className="content-prose"><h2>កសាងចំណេះដឹង បង្កើតអនាគត</h2><p>Our Teacher School បង្កើតឡើងក្នុងឆ្នាំ 2002 ដោយមានគោលបំណងផ្តល់ការអប់រំប្រកបដោយគុណភាព និងបរិយាកាសសិក្សាដែលយកចិត្តទុកដាក់ចំពោះសិស្សគ្រប់រូប។</p><div className="content-highlights"><div><b>2002</b><span>ឆ្នាំចាប់ផ្តើម</span></div><div><b>02</b><span>ទីតាំងសាលា</span></div><div><b>100%</b><span>ការយកចិត្តទុកដាក់</span></div></div><p>យើងជួយសិស្សអភិវឌ្ឍចំណេះដឹង ជំនាញ និងទំនុកចិត្ត ដើម្បីត្រៀមខ្លួនសម្រាប់អនាគត។</p></div>; }
+function Programs() { const programs = [["01", "ថ្នាក់មត្តេយ្យត្រៀមចូលថ្នាក់ទី១", "បណ្តុះមូលដ្ឋានអក្សរ លេខ ការស្តាប់ និងទំនុកចិត្ត ដើម្បីត្រៀមខ្លួនចូលថ្នាក់បឋម។"], ["02", "ថ្នាក់បំប៉នទី១ ដល់ទី១២", "ពង្រឹងមេរៀនសំខាន់ៗ ជួយធ្វើលំហាត់ ត្រៀមប្រឡង និងបង្កើនលទ្ធផលសិក្សា។"], ["03", "ភាសាបរទេស", "ថ្នាក់ភាសាអង់គ្លេស ចិន និងជំនាញទំនាក់ទំនងសម្រាប់សិស្សគ្រប់កម្រិត។"], ["04", "កុំព្យូទ័ររដ្ឋបាល", "សិក្សា ៣ ខែ៖ Typing, Word, Excel និង PowerPoint សម្រាប់សាកលវិទ្យាល័យ និងការងារ។"]]; return <div className="program-detail-page"><p className="program-lead">ជ្រើសរើសកម្មវិធីដែលសមស្របនឹងកម្រិត និងគោលដៅសិក្សារបស់សិស្ស។ សាលាទទួលចុះឈ្មោះជារៀងរាល់ថ្ងៃ។</p><div className="program-detail-grid">{programs.map(([number, title, description]) => <article key={number}><span>{number}</span><h2>{title}</h2><p>{description}</p><Link href="/#enroll" className="text-link">ស្នើព័ត៌មាន និងចុះឈ្មោះ →</Link></article>)}</div><div className="program-cta"><div><b>ចង់សួរអំពីម៉ោងសិក្សា ឬថ្លៃសិក្សា?</b><span>ទំនាក់ទំនងសាលា ដើម្បីទទួលបានព័ត៌មានតាមកម្មវិធីដែលអ្នកចាប់អារម្មណ៍។</span></div><Link href="/contact" className="btn btn-gold">ទំនាក់ទំនងសាលា →</Link></div></div>; }
+function Faq() { const items = [["តើសាលាទទួលចុះឈ្មោះពេលណា?", "សាលាទទួលចុះឈ្មោះសិស្សជារៀងរាល់ថ្ងៃ។ អ្នកអាចបំពេញសំណើចុះឈ្មោះនៅទំព័រដើម ឬទំនាក់ទំនងមកសាលាដោយផ្ទាល់។"], ["តើមានកម្មវិធីសិក្សាអ្វីខ្លះ?", "មានថ្នាក់មត្តេយ្យត្រៀមចូលទី១ ថ្នាក់បំប៉នទី១ ដល់ទី១២ ភាសាបរទេស និងកុំព្យូទ័ររដ្ឋបាល។"], ["តើថ្នាក់កុំព្យូទ័ររៀនអ្វីខ្លះ?", "រៀន Typing ខ្មែរ/អង់គ្លេស, Microsoft Word, Excel និង PowerPoint ក្នុងរយៈពេលប្រហែល ៣ ខែ។"], ["តើអាចសួរព័ត៌មានអំពីថ្លៃសិក្សា និងម៉ោងរៀនដោយរបៀបណា?", "សូមទាក់ទងតាមទូរស័ព្ទ Telegram ឬ Facebook របស់សាលា។ ក្រុមការងារនឹងផ្តល់ព័ត៌មានតាមថ្នាក់ដែលអ្នកចាប់អារម្មណ៍។"], ["តើសាលាមានទីតាំងនៅឯណា?", "សាលាមានទីតាំង ២ កន្លែង។ សូមចូលទំព័រទំនាក់ទំនង ដើម្បីបើកផែនទីទៅកាន់ទីតាំងនីមួយៗ។"]]; return <div className="faq-page">{items.map(([question, answer], index) => <details key={question} open={index === 0}><summary>{question}</summary><p>{answer}</p></details>)}<div className="faq-contact"><b>មិនទាន់ឃើញចម្លើយដែលអ្នកត្រូវការ?</b><Link href="/contact" className="btn btn-navy">ទំនាក់ទំនងយើង →</Link></div></div>; }
 function Contact() { return <div className="contact-page-grid"><div className="contact-page-card"><h2>លេខទូរស័ព្ទ</h2><strong><a href="https://t.me/ourteacherschool1" target="_blank" rel="noreferrer">010 744 440</a></strong><strong><a href="https://t.me/+85577244440" target="_blank" rel="noreferrer">077 244 440</a></strong></div><div className="contact-page-card"><h2><a href="https://maps.app.goo.gl/Roy3xcjboCw7keM57" target="_blank" rel="noreferrer">ទីតាំងទី ១</a></h2><p><a href="https://maps.app.goo.gl/Roy3xcjboCw7keM57" target="_blank" rel="noreferrer">ផ្ទះលេខ 15 និង 16បេ ខាងក្រោយសាលាប៊ែលធី ច្រមុះជ្រូកស្ទឹងមានជ័យ (ចម្ងាយ 200m)</a></p></div><div className="contact-page-card"><h2><a href="https://maps.app.goo.gl/5RYnJe8KpaPzhQCFA" target="_blank" rel="noreferrer">ទីតាំងទី ២</a></h2><p><a href="https://maps.app.goo.gl/5RYnJe8KpaPzhQCFA" target="_blank" rel="noreferrer">ផ្ទះលេខ 241 និងផ្ទះលេខ 355 ផ្លូវលេខ 11 ក្នុងបុរីពិភពថ្មីចម្ការដូង</a></p></div></div>; }
 function Empty({ children }: { children: React.ReactNode }) { return <div className="content-empty">{children}</div>; }
 function Teachers({ items }: { items: Teacher[] }) {
