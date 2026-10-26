@@ -598,20 +598,12 @@ a {
 
 .news-image-button { display: inline-flex; align-items: center; min-height: 38px; margin: -5px 0 12px; padding: 7px 13px; border: 1px solid #cbd8f3; border-radius: 9px; background: #fff; color: var(--navy); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
 .news-image-button:hover { border-color: var(--navy); background: #f1f5ff; transform: translateY(-1px); }
-.news-image-dialog { width: fit-content; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); margin: auto; padding: 0; border: 0; border-radius: 16px; background: transparent; overflow: visible; }
+.news-image-dialog { width: min(1280px, calc(100vw - 24px)); max-width: none; max-height: calc(100vh - 24px); margin: auto; padding: 0; border: 0; border-radius: 16px; background: transparent; overflow: visible; }
 .news-image-dialog::backdrop { background: rgba(10, 17, 49, .78); backdrop-filter: blur(3px); }
-.news-image-dialog-content { position: relative; display: grid; place-items: center; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); padding: 12px; border-radius: 16px; background: #fff; box-shadow: 0 22px 70px #08113680; }
-.news-image-dialog img { display: block; width: auto; height: auto; max-width: min(760px, calc(100vw - 56px)); max-height: calc(100vh - 72px); object-fit: contain; cursor: zoom-in; }
+.news-image-dialog-content { position: relative; display: grid; width: 100%; place-items: center; max-height: calc(100vh - 24px); padding: 12px; border-radius: 16px; background: #fff; box-shadow: 0 22px 70px #08113680; }
+.news-image-dialog img { display: block; width: auto; max-width: 100%; height: auto; max-height: calc(100vh - 48px); object-fit: contain; }
 .news-image-close { position: absolute; z-index: 1; top: 20px; right: 20px; display: grid; width: 38px; height: 38px; place-items: center; border: 0; border-radius: 50%; background: #111a3de6; color: #fff; font-size: 28px; line-height: 1; cursor: pointer; }
 .news-image-close:hover { background: var(--navy); }
-.news-image-zoom { position: absolute; z-index: 1; top: 20px; left: 20px; min-height: 34px; padding: 5px 10px; border: 0; border-radius: 17px; background: #111a3de6; color: #fff; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
-.news-image-zoom:hover { background: var(--navy); }
-.news-image-dialog-content.is-zoomed { display: block; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; }
-.news-image-dialog-content.is-zoomed img { width: min(1100px, 210vw); max-width: none; max-height: none; cursor: zoom-out; }
-
-@media(max-width:520px) {
-    .news-image-dialog-content.is-zoomed { max-height: calc(100vh - 32px); }
-}
 
 .enrollment-section { background: linear-gradient(120deg, #17265c, #253b86); color: #fff; }
 .enrollment-layout { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 80px); align-items: center; }
