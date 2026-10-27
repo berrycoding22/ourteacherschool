@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "../../lib/supabase/server";
 import { defaultVideos, type Video } from "../../lib/videos";
 import NewsImagePreview from "../NewsImagePreview";
@@ -34,6 +35,16 @@ type GalleryItem = { id: number; title_km: string | null; image_url: string; cat
 type ActivityAlbum = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null; activity_photos?: { count: number }[] };
 type News = { id: number; title_km: string; content_km: string | null; cover_url: string | null; created_at: string };
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  if (!(slug in pageMeta)) return {};
+  const [, title] = pageMeta[slug as PageSlug];
+  return {
+    title,
+    description: `${title} របស់ Our Teacher School នៅភ្នំពេញ។`,
+    alternates: { canonical: `/${slug}` },
+  };
+}
 
 export default async function SitePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

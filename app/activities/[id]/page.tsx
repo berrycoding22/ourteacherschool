@@ -1,9 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "../../../lib/supabase/server";
 
 type Album = { id: number; title_km: string; description_km: string | null; cover_url: string; activity_date: string | null };
 type Photo = { id: number; image_url: string; caption_km: string | null };
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  return { alternates: { canonical: `/activities/${id}` } };
+}
 
 export default async function ActivityDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

@@ -16,7 +16,8 @@ Next.js + Supabase foundation for a real public school website.
 - Create a Supabase Storage bucket if you want to upload images instead of entering image URLs.
 - Add real YouTube IDs.
 - Add Khmer/English public pages that read from Supabase.
-- Replace example.com sitemap/domain values with the real domain.
+- Set `NEXT_PUBLIC_SITE_URL` to the final public domain (for example, `https://ourteacherschool.com`). This keeps canonical URLs, robots.txt, and sitemap.xml correct.
+- After deployment, verify the domain in Google Search Console and submit `https://your-domain.com/sitemap.xml` for indexing.
 - Deploy to Vercel or another Next.js host and connect the school domain.
 
 School identity:

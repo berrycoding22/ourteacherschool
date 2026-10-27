@@ -1,10 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import VideoCard from "./VideoCard";
 import { createClient } from "../lib/supabase/server";
 import { defaultVideos, type Video } from "../lib/videos";
 import { submitEnrollmentInquiry } from "./enrollment-actions";
 import NewsImagePreview from "./NewsImagePreview";
 import MobileContactBar from "./MobileContactBar";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const nav = [
   ["ទំព័រដើម", "/"],
