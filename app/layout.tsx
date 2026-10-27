@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Our Teacher School នៅភ្នំពេញ ផ្តល់ថ្នាក់បំប៉នទី១–១២ មត្តេយ្យ ភាសាបរទេស និងជំនាញកុំព្យូទ័រ។",
   keywords: ["Our Teacher School", "សាលាបំប៉នភ្នំពេញ", "សាលាបំប៉ន", "រៀនកុំព្យូទ័រ", "រៀនភាសាអង់គ្លេស", "Phnom Penh school", "Cambodia school"],
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
-  verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
+  verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "ovRTXrZGV5P7AUf2-kI5tZZROqM4G5OknSyFXOza1Ng" },
   openGraph: { type: "website", locale: "km_KH", siteName, url: "/", title: "Our Teacher School | សាលាបំប៉ននៅភ្នំពេញ", description: "ការអប់រំប្រកបដោយគុណភាព សម្រាប់អនាគតសិស្ស។", images: [{ url: "/logo-hero.png", alt: "Our Teacher School" }] },
   twitter: { card: "summary_large_image", title: "Our Teacher School | Build Your Life", description: "ការអប់រំប្រកបដោយគុណភាព សម្រាប់អនាគតសិស្ស។", images: ["/logo-hero.png"] },
   icons: {
